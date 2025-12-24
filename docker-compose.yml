@@ -1,0 +1,167 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: clinic-ai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clinic_ai
+      POSTGRES_USER: clinic_ai
+      POSTGRES_PASSWORD: clinic_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - clinic_ai_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinic_ai -d clinic_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4-clinicai
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    depends_on:
+      - postgres
+      - postgres-evoltion
+    networks:
+      - default          
+      - evolution-network
+
+  evolution-api:
+    image: evoapicloud/evolution-api:v2.3.6
+    container_name: evolution_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # Server Configuration
+      - SERVER_TYPE=http
+      - SERVER_PORT=8080
+      - SERVER_URL=http://localhost:8080
+      - CORS_ORIGIN=*
+      - CORS_METHODS=GET,POST,PUT,DELETE,OPTIONS
+      - CORS_CREDENTIALS=true
+
+      # Database Configuration
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://evolution:evolution@postgres-evoltion:5432/evolution?schema=public
+      - DATABASE_CONNECTION_CLIENT_NAME=EvolutionAPI
+      - DATABASE_SAVE_DATA_INSTANCE=true
+      - DATABASE_SAVE_DATA_NEW_MESSAGE=true
+      - DATABASE_SAVE_MESSAGE_UPDATE=true
+      - DATABASE_SAVE_DATA_CONTACTS=true
+      - DATABASE_SAVE_DATA_CHATS=true
+
+      # Redis Configuration (Recommended for production)
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://redis:6379
+      - REDIS_PREFIX_KEY=evolution
+
+      # Authentication
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=80341745-96b1-4574-866f-870f44be8faf 
+      - AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
+
+      # Language
+      - LANGUAGE=pt-BR
+
+      # Logs
+      - LOG_LEVEL=ERROR
+      - LOG_COLOR=true
+      - LOG_BAILEYS=error
+
+      # Instance Configuration
+      - DEL_INSTANCE=false
+      - DEL_TEMP_INSTANCES=true
+
+      # Webhook Configuration
+      - WEBHOOK_GLOBAL_ENABLED=false
+      - WEBHOOK_GLOBAL_URL=
+      - WEBHOOK_GLOBAL_WEBHOOK_BY_EVENTS=false
+
+      # Config Session Phone
+      - CONFIG_SESSION_PHONE_CLIENT=Evolution API
+      - CONFIG_SESSION_PHONE_NAME=Chrome
+      - CONFIG_SESSION_PHONE_VERSION=2.3000.1030971918
+
+      # QR Code Configuration
+      - QRCODE_LIMIT=30
+      - QRCODE_COLOR=#198754
+
+      # Typebot Integration
+      - TYPEBOT_ENABLED=false
+      - TYPEBOT_API_VERSION=latest
+
+      # Chatwoot Integration
+      - CHATWOOT_ENABLED=false
+
+      # Cache Configuration
+      - CACHE_REDIS_ENABLED=true
+      - CACHE_REDIS_URI=redis://redis:6379
+      - CACHE_REDIS_PREFIX_KEY=evolution
+      - CACHE_REDIS_TTL=604800
+      - CACHE_LOCAL_ENABLED=false
+
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+    depends_on:
+      - postgres-evoltion
+      - redis
+    networks:
+      - evolution-network
+
+  # PostgreSQL Database
+  postgres-evoltion:
+    image: postgres:15-alpine
+    container_name: evolution_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=evolution
+      - POSTGRES_USER=evolution
+      - POSTGRES_PASSWORD=evolution
+      - TZ=America/Sao_Paulo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    networks:
+      - evolution-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: evolution_redis
+    restart: always
+    command: redis-server --appendonly yes --replica-read-only no --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - evolution-network
+  
+networks:
+  evolution-network:
+    driver: bridge
+
+volumes:
+  clinic_ai_pgdata:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  evolution_instances:
+    driver: local
+  evolution_store:
+    driver: local

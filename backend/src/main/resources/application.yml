@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinic_ai
+    username: clinic_ai
+    password: clinic_ai
+
+  jpa:
+    hibernate:
+      ddl-auto: update        # <- deixa o Hibernate criar/atualizar as tabelas
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+    open-in-view: false
+
+  flyway:
+    enabled: false            # <- desliga Flyway por enquanto
+
+server:
+  port: 8081
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      expiration-minutes: 60
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      base-url: https://api.openai.com/v1
+      model: gpt-4.1-mini
+
+#logging:
+#  level.org.hibernate:
+#    SQL: DEBUG
+#    descriptor:
+#      sql:
+#        BasicBinder=TRACE:
+
+zapi:
+  base-url: https://api.z-api.io
+  instance-id: 3EB92EF66A5AA1272EF64A1F6B0D2773
+  token: 927A39BB005A8132AE9F6DD9
+  client-token: F65e23dc2bb014369926b6c6d764ebcc5S
