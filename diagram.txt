@@ -1,0 +1,86 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table clinics {
+  id uuid [primary key]
+  name varchar(150)
+  specialty varchar(150)
+  whatsapp_number varchar(50)
+  timezone varchar(50)
+  ai_config jsonb
+  created_at timestampz
+  updated_at timestampz
+}
+
+Table clinic_fields {
+  id uuid [primary key]
+  clinic_id uuid
+  field_key varchar(50)
+  required boolean
+  prompt_question text
+  priority int
+  extractor_hint text
+  enabled boolean
+  created_at timestampz
+  updated_at timestampz
+}
+
+Table clinic_kb_entries {
+  id uuid [primary key]
+  clinic_id uuid 
+  title varchar(200)
+  content text
+  category varchar(50)
+  tags text[]
+  enabled boolean
+  created_at timestampz
+  updated_at timestampz
+}
+
+Ref clinic_patients: patients.clinic_id > clinics.id
+Ref clinic_conversations: conversations.clinic_id > clinics.id
+Ref clinic_clinic_fields: clinic_fields.clinic_id > clinics.id
+Ref clinic_clinic_kb_entries: clinic_kb_entries.clinic_id > clinics.id
+
+Table patients {
+  id uuid [primary key]
+  clinic_id uuid
+  phone varchar(30)
+  full_name varchar(150)
+  email varchar(150)
+  patient_type varchar(50)
+  first_contact_at timestampz
+  created_at timestampz
+  updated_at timestampz
+}
+
+Ref patient_conversations: conversations.patient_id > patients.id
+
+Table conversations {
+  id uuid [primary key]
+  clinic_id uuid
+  patient_id uuid
+  channel varchar(30)
+  status varchar(30)
+  created_at timestampz
+  updated_at timestampz
+}
+
+Ref conversation_state_conversations: conversations.id - conversation_state.conversation_id
+
+Table conversation_state {
+  conversation_id uuid [primary key] 
+  state jsonb
+  updated_at timestampz
+}
+
+Ref conversation_messages: messages.conversation_id > conversations.id
+
+Table messages {
+  id uuid [primary key]
+  conversation_id uuid
+  direction varchar(10)
+  text text
+  created_at timestampz
+}
+
