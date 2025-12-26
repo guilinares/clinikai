@@ -1,41 +1,40 @@
+server:
+  port: 8080
+
 spring:
+  application:
+    name: clinikai
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinic_ai
-    username: clinic_ai
-    password: clinic_ai
+    url: jdbc:postgresql://localhost:5432/clinikai
+    username: clinikai
+    password: clinikai
 
   jpa:
     hibernate:
-      ddl-auto: update        # <- deixa o Hibernate criar/atualizar as tabelas
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
-        show_sql: false
-    open-in-view: false
 
   flyway:
-    enabled: false            # <- desliga Flyway por enquanto
+    url: jdbc:postgresql://localhost:5432/clinikai
+    password: clinikai
+    user: clinikai
+    enabled: true
+    baseline-on-migrate: true
 
-server:
-  port: 8081
+logging:
+  level:
+    root: DEBUG
+    org.flywaydb: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: TRACE
 
 app:
-  security:
-    jwt:
-      secret: ${JWT_SECRET}
-      expiration-minutes: 60
-  ai:
-    openai:
-      api-key: ${OPENAI_API_KEY:}
-      base-url: https://api.openai.com/v1
-      model: gpt-4.1-mini
-
-#logging:
-#  level.org.hibernate:
-#    SQL: DEBUG
-#    descriptor:
-#      sql:
-#        BasicBinder=TRACE:
+  webhooks:
+    zapi:
+      secret: "CHANGE_ME_DEV_SECRET"
 
 zapi:
   base-url: https://api.z-api.io

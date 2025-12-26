@@ -1,7 +1,8 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.0'
-	id 'io.spring.dependency-management' version '1.1.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.flywaydb.flyway' version '6.4.3'
 }
 
 group = 'com.guilinares'
@@ -18,41 +19,34 @@ repositories {
 }
 
 dependencies {
-	// Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-	// JPA + Postgres
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'org.postgresql:postgresql'
-
-	// Segurança
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-
-	// Bean Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// Flyway
-	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-flyway:4.0.0'
+	implementation 'org.flywaydb:flyway-database-postgresql:11.20.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
 	// JWT (jjwt 0.12.x)
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
-	// Lombok (opcional mas ajuda)
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
 
-	// Testes
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.9.6'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-
-	// https://mvnrepository.com/artifact/com.openai/openai-java
-	implementation("com.openai:openai-java:0.10.0")
 }
 
-tasks.withType(Test).configureEach {
+tasks.named('test') {
 	useJUnitPlatform()
 }
