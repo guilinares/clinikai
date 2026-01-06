@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.domain.entities;
+package com.guilinares.clinikai.infrastructure.data.entities;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;

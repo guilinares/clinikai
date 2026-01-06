@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.domain.entities;
+package com.guilinares.clinikai.infrastructure.data.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,18 +8,18 @@ import java.util.UUID;
 
 @Entity
 @Table(
-        name = "clinic_fields",
+        name = "patients",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_clinic_fields",
-                        columnNames = {"clinic_id", "field_key"}
+                        name = "uk_patients_clinic_phone",
+                        columnNames = {"clinic_id", "phone"}
                 )
         }
 )
 @Getter @Setter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class ClinicFieldEntity {
+public class PatientEntity {
 
     @Id
     @GeneratedValue
@@ -29,23 +29,20 @@ public class ClinicFieldEntity {
     @JoinColumn(name = "clinic_id", nullable = false)
     private ClinicEntity clinic;
 
-    @Column(name = "field_key", nullable = false, length = 50)
-    private String fieldKey;
+    @Column(nullable = false, length = 30)
+    private String phone;
 
-    @Column(nullable = false)
-    private boolean required;
+    @Column(name = "full_name", length = 150)
+    private String fullName;
 
-    @Column(name = "prompt_question", nullable = false, columnDefinition = "text")
-    private String promptQuestion;
+    @Column(length = 150)
+    private String email;
 
-    @Column(nullable = false)
-    private int priority;
+    @Column(name = "patient_type", length = 50)
+    private String patientType;
 
-    @Column(name = "extractor_hint", columnDefinition = "text")
-    private String extractorHint;
-
-    @Column(nullable = false)
-    private boolean enabled;
+    @Column(name = "first_contact_at")
+    private OffsetDateTime firstContactAt;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -58,8 +55,6 @@ public class ClinicFieldEntity {
         var now = OffsetDateTime.now();
         createdAt = now;
         updatedAt = now;
-        if (priority == 0) priority = 100;
-        if (!enabled) enabled = true;
     }
 
     @PreUpdate

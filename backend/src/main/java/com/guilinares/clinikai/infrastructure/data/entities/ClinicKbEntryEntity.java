@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.domain.entities;
+package com.guilinares.clinikai.infrastructure.data.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,19 +7,11 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "patients",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_patients_clinic_phone",
-                        columnNames = {"clinic_id", "phone"}
-                )
-        }
-)
+@Table(name = "clinic_kb_entries")
 @Getter @Setter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class PatientEntity {
+public class ClinicKbEntryEntity {
 
     @Id
     @GeneratedValue
@@ -29,20 +21,20 @@ public class PatientEntity {
     @JoinColumn(name = "clinic_id", nullable = false)
     private ClinicEntity clinic;
 
-    @Column(nullable = false, length = 30)
-    private String phone;
+    @Column(nullable = false, length = 200)
+    private String title;
 
-    @Column(name = "full_name", length = 150)
-    private String fullName;
+    @Column(nullable = false, columnDefinition = "text")
+    private String content;
 
-    @Column(length = 150)
-    private String email;
+    @Column(length = 50)
+    private String category;
 
-    @Column(name = "patient_type", length = 50)
-    private String patientType;
+    @Column(columnDefinition = "text[]")
+    private String[] tags;
 
-    @Column(name = "first_contact_at")
-    private OffsetDateTime firstContactAt;
+    @Column(nullable = false)
+    private boolean enabled;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -55,6 +47,7 @@ public class PatientEntity {
         var now = OffsetDateTime.now();
         createdAt = now;
         updatedAt = now;
+        if (!enabled) enabled = true;
     }
 
     @PreUpdate

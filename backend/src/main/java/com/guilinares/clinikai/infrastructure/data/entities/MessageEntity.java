@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.domain.entities;
+package com.guilinares.clinikai.infrastructure.data.entities;
 
 import com.guilinares.clinikai.domain.enums.MessageDirection;
 import jakarta.persistence.*;
