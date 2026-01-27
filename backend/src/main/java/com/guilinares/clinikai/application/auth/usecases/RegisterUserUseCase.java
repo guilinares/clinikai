@@ -10,6 +10,7 @@ import com.guilinares.clinikai.domain.user.UserRole;
 import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class RegisterUserUseCase {
@@ -37,7 +38,7 @@ public class RegisterUserUseCase {
 
         User saved = users.save(user);
 
-        String token = jwt.createAccessToken(saved.getId(), saved.getClinicId(), saved.getEmail(), saved.getRole().name());
+        String token = jwt.createAccessToken(saved.id(), saved.clinicId(), saved.email(), saved.role().name());
         return new AuthTokens(token);
     }
 }

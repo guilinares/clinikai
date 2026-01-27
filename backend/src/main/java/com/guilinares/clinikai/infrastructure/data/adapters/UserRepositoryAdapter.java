@@ -49,14 +49,14 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     private UserEntity toEntity(User u) {
         return UserEntity.builder()
-                .id(u.getId())
-                .clinicId(u.getClinicId())
-                .name(u.getName())
-                .email(u.getEmail())
-                .passwordHash(u.getPasswordHash())
-                .role(u.getRole().name())
-                .createdAt(u.getCreatedAt())
-                .updatedAt(u.getUpdatedAt())
+                .id(u.id())
+                .clinicId(u.clinicId())
+                .name(u.name())
+                .email(u.email())
+                .passwordHash(u.passwordHash())
+                .role(u.role().name())
+                .createdAt(u.createdAt())
+                .updatedAt(u.updatedAt())
                 .build();
     }
 }

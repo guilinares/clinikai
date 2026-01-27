@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.infrastructure.web.auth;
+package com.guilinares.clinikai.application.auth;
 
 import com.guilinares.clinikai.application.auth.ports.*;
 import com.guilinares.clinikai.application.auth.usecases.*;
@@ -19,7 +19,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    public GetMeUseCase getMeUseCase(UserRepositoryPort users) {
-        return new GetMeUseCase(users);
+    public MeUseCase getMeUseCase(CurrentUserPort user) {
+        return new MeUseCase(user);
     }
 }

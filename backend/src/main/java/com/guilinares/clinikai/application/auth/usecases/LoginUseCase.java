@@ -18,11 +18,11 @@ public class LoginUseCase {
         var user = users.findByEmail(cmd.email().trim().toLowerCase())
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais inválidas."));
 
-        if (!hasher.matches(cmd.password(), user.getPasswordHash())) {
+        if (!hasher.matches(cmd.password(), user.passwordHash())) {
             throw new IllegalArgumentException("Credenciais inválidas.");
         }
 
-        String token = jwt.createAccessToken(user.getId(), user.getClinicId(), user.getEmail(), user.getRole().name());
+        String token = jwt.createAccessToken(user.id(), user.clinicId(), user.email(), user.role().name());
         return new AuthTokens(token);
     }
 }

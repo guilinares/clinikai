@@ -1,12 +1,9 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -25,16 +22,15 @@ public class ConversationStateEntity {
     @JoinColumn(name = "conversation_id")
     private ConversationEntity conversation;
 
-    @Type(JsonType.class)
-    @Column(name = "state", columnDefinition = "jsonb", nullable = false)
-    private Map<String, Object> state;
+    @Column(name = "state")
+    private String state;
 
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
-        if (state == null) state = Map.of();
+        if (state == null) state = "";
         updatedAt = OffsetDateTime.now();
     }
 

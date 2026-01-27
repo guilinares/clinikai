@@ -1,12 +1,10 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -35,9 +33,8 @@ public class ClinicEntity {
     @Column(length = 50, nullable = false)
     private String timezone;
 
-    @Type(JsonType.class)
-    @Column(name = "ai_config", columnDefinition = "jsonb", nullable = false)
-    private Map<String, Object> aiConfig;
+    @Column(name = "ai_config")
+    private String aiConfig;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -51,7 +48,7 @@ public class ClinicEntity {
         createdAt = now;
         updatedAt = now;
         if (timezone == null) timezone = "America/Sao_Paulo";
-        if (aiConfig == null) aiConfig = Map.of();
+        if (aiConfig == null) aiConfig = "";
     }
 
     @PreUpdate

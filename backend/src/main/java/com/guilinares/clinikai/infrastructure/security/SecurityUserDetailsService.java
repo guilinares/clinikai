@@ -17,11 +17,11 @@ public class SecurityUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new SecurityUserPrincipal(
-                user.getId(),
-                user.getClinicId(),
-                user.getEmail(),
-                user.getPasswordHash(),
-                user.getRole().name()
+                user.id(),
+                user.clinicId(),
+                user.email(),
+                user.passwordHash(),
+                user.role().name()
         );
     }
 }
