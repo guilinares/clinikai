@@ -6,10 +6,13 @@ import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
 import com.guilinares.clinikai.infrastructure.data.entities.PatientEntity;
 import com.guilinares.clinikai.infrastructure.data.repositories.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Component
 @RequiredArgsConstructor
 public class PatientRepositoryAdapter implements PatientRepositoryPort {
 
@@ -25,8 +28,9 @@ public class PatientRepositoryAdapter implements PatientRepositoryPort {
         PatientEntity patientEntity = PatientEntity.builder()
                 .clinic(clinic)
                 .phone(phoneId)
+                .firstContactAt(OffsetDateTime.now())
+                .updatedAt(OffsetDateTime.now())
                 .build();
-        PatientEntity patient = patients.save(patientEntity);
-        return patient;
+        return patients.save(patientEntity);
     }
 }

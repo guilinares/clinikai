@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.guilinares.clinikai.domain.clinic.Clinic.toDomain;
+import static com.guilinares.clinikai.domain.clinic.Clinic.toEntity;
+
 @Component
 @RequiredArgsConstructor
 public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
@@ -26,7 +29,7 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
     @Override
     public Clinic findById(UUID clinicId) {
         Optional<ClinicEntity> clinic = repo.findById(clinicId);
-        return clinic.map(this::toDomain).orElse(null);
+        return clinic.map(Clinic::toDomain).orElse(null);
     }
 
     @Override
