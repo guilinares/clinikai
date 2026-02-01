@@ -11,4 +11,5 @@ public interface ClinicRepositoryPort {
     Clinic save(Clinic clinic);
     Clinic findById(UUID clinicId);
     Optional<ClinicEntity> findByPhone(String phone);
+    ClinicEntity getReference(UUID clinicId);
 }

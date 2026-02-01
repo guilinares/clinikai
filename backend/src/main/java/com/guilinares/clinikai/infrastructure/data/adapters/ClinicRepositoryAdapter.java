@@ -37,4 +37,9 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
         Optional<ClinicEntity> clinic = repo.findByWhatsappNumber(phone);
         return clinic;
     }
+
+    @Override
+    public ClinicEntity getReference(UUID clinicId) {
+        return repo.getReferenceById(clinicId);
+    }
 }

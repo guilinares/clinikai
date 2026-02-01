@@ -1,9 +1,8 @@
 package com.guilinares.clinikai.application.clinic;
 
+import com.guilinares.clinikai.application.clinic.ports.ClinicKbRepositoryPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
-import com.guilinares.clinikai.application.clinic.usecases.DetailClinicUseCase;
-import com.guilinares.clinikai.application.clinic.usecases.FindClinicByPhoneUsecase;
-import com.guilinares.clinikai.application.clinic.usecases.RegisterClinicUseCase;
+import com.guilinares.clinikai.application.clinic.usecases.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,5 +22,15 @@ public class ClinicUseCaseConfig {
     @Bean
     public FindClinicByPhoneUsecase findClinicByPhoneUsecase(ClinicRepositoryPort port) {
         return new FindClinicByPhoneUsecase(port);
+    }
+
+    @Bean
+    public ListClinicKbUseCase listClinicKbUseCase(ClinicRepositoryPort port, ClinicKbRepositoryPort clinicKbRepositoryPort) {
+        return new ListClinicKbUseCase(clinicKbRepositoryPort, port);
+    }
+
+    @Bean
+    public RegisterClinicKbUseCase registerClinicKbUseCase(ClinicRepositoryPort port, ClinicKbRepositoryPort clinicKbRepositoryPort) {
+        return new RegisterClinicKbUseCase(clinicKbRepositoryPort, port);
     }
 }

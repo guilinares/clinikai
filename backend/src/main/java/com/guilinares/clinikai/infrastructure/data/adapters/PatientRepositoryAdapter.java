@@ -33,4 +33,9 @@ public class PatientRepositoryAdapter implements PatientRepositoryPort {
                 .build();
         return patients.save(patientEntity);
     }
+
+    @Override
+    public PatientEntity getReference(UUID patientId) {
+        return patients.getReferenceById(patientId);
+    }
 }

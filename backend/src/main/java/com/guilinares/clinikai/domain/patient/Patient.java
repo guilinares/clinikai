@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 public class Patient {
     private UUID id;
+    private UUID clinicId;
     private String fullName;
     private String lastMessage;
     private String phoneId;
@@ -19,6 +20,7 @@ public class Patient {
     public static Patient toDomain(PatientEntity e) {
         return new Patient(
                 e.getId(),
+                e.getClinic().getId(),
                 e.getFullName(),
                 "",
                 e.getPhone(),

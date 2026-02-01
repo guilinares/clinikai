@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface PatientRepositoryPort {
     Optional<PatientEntity> findByClinicIdAndPhone(UUID clinicId, String phoneId);
     PatientEntity save(ClinicEntity clinic, String phoneId);
+    PatientEntity getReference(UUID patientId);
 }

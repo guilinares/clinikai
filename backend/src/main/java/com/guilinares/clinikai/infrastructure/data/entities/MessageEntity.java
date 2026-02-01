@@ -32,6 +32,15 @@ public class MessageEntity {
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(name = "claim_id")
+    private UUID claimId;
+
+    @Column(name = "claimed_at")
+    private OffsetDateTime claimedAt;
+
+    @Column(name = "processed_at")
+    private OffsetDateTime processedAt;
+
     @PrePersist
     public void prePersist() {
         createdAt = OffsetDateTime.now();

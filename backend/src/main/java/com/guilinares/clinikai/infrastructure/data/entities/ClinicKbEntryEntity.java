@@ -1,5 +1,6 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
+import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +28,9 @@ public class ClinicKbEntryEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(length = 50)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private ClinicKbCategory category;
 
     @Column(columnDefinition = "text[]")
     private String[] tags;

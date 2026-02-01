@@ -15,7 +15,8 @@ public class RegisterClinicUseCase {
     private final ClinicRepositoryPort clinics;
 
     public Clinic execute(ClinicRequest clinicRequest) {
-        if (clinics.findByPhone(clinicRequest.whatsappNumber()) != null)
+        var clinicOpt = clinics.findByPhone(clinicRequest.whatsappNumber());
+        if (clinics.findByPhone(clinicRequest.whatsappNumber()).isPresent())
             throw new TelefoneJaPossuiClinicaException(String.format(
                     "O telefone %s já possui uma clinica cadastrada.", clinicRequest.whatsappNumber()
             ));
