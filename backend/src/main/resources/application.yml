@@ -1,6 +1,19 @@
 server:
   port: 8080
 
+google:
+  oauth:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-uri: http://localhost:8080/api/integrations/google/callback
+
+asaas:
+  base-url: https://api.asaas.com/v3
+  api-key: ${ASAAS_API_KEY}
+
+security:
+  crypto:
+    master-key-base64: ${CRYPTO_MASTER_KEY_BASE64}
 spring:
   application:
     name: clinikai

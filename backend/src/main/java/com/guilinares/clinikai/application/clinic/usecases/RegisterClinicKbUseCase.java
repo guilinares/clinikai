@@ -9,6 +9,7 @@ import com.guilinares.clinikai.infrastructure.data.entities.ClinicKbEntryEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class RegisterClinicKbUseCase {
@@ -16,8 +17,8 @@ public class RegisterClinicKbUseCase {
     private final ClinicKbRepositoryPort clinicKb;
     private final ClinicRepositoryPort clinic;
 
-    public ListClinicKbUseCase.ClinicKbEntryResponse execute(String clinicPhone, String title, String content, String category) {
-        Optional<ClinicEntity> clinicEntity = clinic.findByPhone(clinicPhone);
+    public ListClinicKbUseCase.ClinicKbEntryResponse execute(String clinicId, String title, String content, String category) {
+        Optional<ClinicEntity> clinicEntity = clinic.findById(UUID.fromString(clinicId));
         if (clinicEntity.isEmpty()) throw new ClinicaNaoEncontradaException("Clinica não encotrada");
         ClinicKbEntryEntity clinicKbEntity = ClinicKbEntryEntity.builder()
                 .clinic(clinicEntity.get())

@@ -12,7 +12,7 @@ public class DetailClinicUseCase {
     private final ClinicRepositoryPort clinicRepositoryPort;
 
     public Clinic execute(UUID clinicID) {
-        Clinic clinic = clinicRepositoryPort.findById(clinicID);
+        Clinic clinic = Clinic.toDomain(clinicRepositoryPort.findById(clinicID).get());
         return clinic;
     }
 }

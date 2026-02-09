@@ -27,9 +27,9 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
     }
 
     @Override
-    public Clinic findById(UUID clinicId) {
+    public Optional<ClinicEntity> findById(UUID clinicId) {
         Optional<ClinicEntity> clinic = repo.findById(clinicId);
-        return clinic.map(Clinic::toDomain).orElse(null);
+        return clinic;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.guilinares.clinikai.infrastructure.security;
 
+import com.guilinares.clinikai.infrastructure.billing.BillingEnforcementFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
+    private final BillingEnforcementFilter billingEnforcementFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,14 +34,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/clinics/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/clinics**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/clinics/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/patients/new-message").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/conversation/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/integrations/google/callback").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(billingEnforcementFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.guilinares.clinikai.presentation.controllers;
 
+import com.guilinares.clinikai.application.clinic.exceptions.FailDeleteKbException;
 import com.guilinares.clinikai.application.clinic.exceptions.InvalidCategoryException;
 import com.guilinares.clinikai.application.clinic.exceptions.NotClinicKbFound;
 import com.guilinares.clinikai.application.clinic.exceptions.TelefoneJaPossuiClinicaException;
@@ -26,5 +27,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCategoryException.class)
     public ResponseEntity<ApiError> handleInvalidCategoryException(InvalidCategoryException e) {
         return ResponseEntity.badRequest().body(new ApiError("Categoria informada inválida."));
+    }
+
+    @ExceptionHandler(FailDeleteKbException.class)
+    public ResponseEntity<ApiError> handleFailDeleteKbException(FailDeleteKbException e) {
+        return ResponseEntity.badRequest().body(new ApiError("Falha ao deletar KB."));
     }
 }

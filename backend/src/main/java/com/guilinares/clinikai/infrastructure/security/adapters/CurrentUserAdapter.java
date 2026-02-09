@@ -22,6 +22,11 @@ public class CurrentUserAdapter implements  CurrentUserPort {
     }
 
     @Override
+    public String name() {
+        return principal().getUsername();
+    }
+
+    @Override
     public String email() {
         return principal().email();
     }

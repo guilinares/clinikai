@@ -2,6 +2,7 @@ package com.guilinares.clinikai.application.clinic.usecases;
 
 import com.guilinares.clinikai.application.clinic.dto.ClinicRequest;
 import com.guilinares.clinikai.application.clinic.exceptions.TelefoneJaPossuiClinicaException;
+import com.guilinares.clinikai.application.clinic.ports.ClinicBillingRepositoryPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
 import com.guilinares.clinikai.domain.clinic.Clinic;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.UUID;
 public class RegisterClinicUseCase {
 
     private final ClinicRepositoryPort clinics;
+    private final ClinicBillingRepositoryPort clinicBilling;
 
     public Clinic execute(ClinicRequest clinicRequest) {
         var clinicOpt = clinics.findByPhone(clinicRequest.whatsappNumber());
@@ -26,6 +28,7 @@ public class RegisterClinicUseCase {
             clinicRequest.specialty().trim().toLowerCase(),
             clinicRequest.whatsappNumber().trim()
         );
+        clinicBilling.createClinicBilling(Clinic.toEntity(clinic));
         return clinics.save(clinic);
     }
 }

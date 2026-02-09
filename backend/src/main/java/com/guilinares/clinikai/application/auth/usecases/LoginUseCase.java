@@ -5,7 +5,11 @@ import com.guilinares.clinikai.application.auth.dto.LoginCommand;
 import com.guilinares.clinikai.application.auth.ports.JwtTokenPort;
 import com.guilinares.clinikai.application.auth.ports.PasswordHasherPort;
 import com.guilinares.clinikai.application.auth.ports.UserRepositoryPort;
+import com.guilinares.clinikai.domain.user.User;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class LoginUseCase {
@@ -14,7 +18,7 @@ public class LoginUseCase {
     private final PasswordHasherPort hasher;
     private final JwtTokenPort jwt;
 
-    public AuthTokens execute(LoginCommand cmd) {
+    public LoginResponse execute(LoginCommand cmd) {
         var user = users.findByEmail(cmd.email().trim().toLowerCase())
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais inválidas."));
 
@@ -23,6 +27,26 @@ public class LoginUseCase {
         }
 
         String token = jwt.createAccessToken(user.id(), user.clinicId(), user.email(), user.role().name());
-        return new AuthTokens(token);
+        return new LoginResponse(token, user.clinicId(), new AuthUserResponse(
+                user.id(),
+                user.clinicId(),
+                user.name(),
+                user.email(),
+                user.role().name()
+        ));
     }
+
+    public record LoginResponse(
+            String accessToken,
+            UUID clinicId,
+            AuthUserResponse user
+    ) {}
+
+    public record AuthUserResponse(
+            UUID id,
+            UUID clinicId,
+            String name,
+            String email,
+            String role
+    ) {}
 }

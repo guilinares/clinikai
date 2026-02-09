@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ListClinicKbUseCase {
@@ -21,10 +22,10 @@ public class ListClinicKbUseCase {
     private final ClinicKbRepositoryPort clinicKb;
     private final ClinicRepositoryPort clinic;
 
-    public PagedResponse<ClinicKbEntryResponse> execute(String clinicPhone, Boolean enabled, String category, Pageable pageable) {
-        Optional<ClinicEntity> clinicEntity = clinic.findByPhone(clinicPhone);
+    public PagedResponse<ClinicKbEntryResponse> execute(String clinicId, Boolean enabled, String category, String q, Pageable pageable) {
+        Optional<ClinicEntity> clinicEntity = clinic.findById(UUID.fromString(clinicId));
         if (clinicEntity.isEmpty()) throw new ClinicaNaoEncontradaException("Clinica não encotrada");
-        Page<ClinicKbEntryEntity> pagedKbs = clinicKb.findAllByClinicId(clinicEntity.get().getId(), enabled, ClinicKbCategory.nameFrom(category), null, pageable.getPageNumber(), pageable.getPageSize());
+        Page<ClinicKbEntryEntity> pagedKbs = clinicKb.findAllByClinicId(clinicEntity.get().getId(), enabled, ClinicKbCategory.nameFrom(category), q,  null, pageable.getPageNumber(), pageable.getPageSize());
         if (pagedKbs.isEmpty()) throw new NotClinicKbFound();
         var items = pagedKbs.getContent().stream()
                 .map(ClinicKbEntryResponse::fromEntity)

@@ -16,11 +16,12 @@ public class MeUseCase {
     public Output execute() {
         return new Output(
                 currentUser.userId(),
+                currentUser.name(),
                 currentUser.email(),
                 currentUser.role(),
                 currentUser.clinicId()
         );
     }
 
-    public record Output(UUID userId, String email, String role, UUID clinicId) {}
+    public record Output(UUID id, String name, String email, String role, UUID clinicId) {}
 }

@@ -19,28 +19,41 @@ public interface ClinicKbEntryRepository extends JpaRepository<ClinicKbEntryEnti
     // =========================================================
     // 1) LISTAR por clínica (admin) com filtros opcionais
     // =========================================================
-    @Query(value = """
-        SELECT *
-        FROM clinic_kb_entries
-        WHERE clinic_id = :clinicId
-          AND (:enabled IS NULL OR enabled = :enabled)
-          AND (:category IS NULL OR category = :category)
-          AND (:tag IS NULL OR :tag = ANY(tags))
-        ORDER BY updated_at DESC, created_at DESC
-        """,
+    @Query(
+            value = """
+    SELECT *
+    FROM clinic_kb_entries
+    WHERE clinic_id = :clinicId
+      AND (:enabled IS NULL OR enabled = :enabled)
+      AND (:category IS NULL OR category = :category)
+      AND (:tag IS NULL OR :tag = ANY(tags))
+      AND (
+        :q IS NULL
+        OR title ILIKE CONCAT('%', :q, '%')
+        OR content ILIKE CONCAT('%', :q, '%')
+      )
+    ORDER BY updated_at DESC, created_at DESC
+    """,
             countQuery = """
-        SELECT count(*)
-        FROM clinic_kb_entries
-        WHERE clinic_id = :clinicId
-          AND (:enabled IS NULL OR enabled = :enabled)
-          AND (:category IS NULL OR category = :category)
-          AND (:tag IS NULL OR :tag = ANY(tags))
-        """,
-            nativeQuery = true)
+    SELECT count(*)
+    FROM clinic_kb_entries
+    WHERE clinic_id = :clinicId
+      AND (:enabled IS NULL OR enabled = :enabled)
+      AND (:category IS NULL OR category = :category)
+      AND (:tag IS NULL OR :tag = ANY(tags))
+      AND (
+        :q IS NULL
+        OR title ILIKE CONCAT('%', :q, '%')
+        OR content ILIKE CONCAT('%', :q, '%')
+      )
+    """,
+            nativeQuery = true
+    )
     Page<ClinicKbEntryEntity> listByClinic(
             @Param("clinicId") UUID clinicId,
             @Param("enabled") Boolean enabled,
             @Param("category") String category,
+            @Param("q") String q,
             @Param("tag") String tag,
             Pageable pageable
     );

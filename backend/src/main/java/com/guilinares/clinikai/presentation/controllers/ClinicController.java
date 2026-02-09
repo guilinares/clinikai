@@ -27,7 +27,11 @@ public class ClinicController {
     private final DetailClinicUseCase detailClinicUseCase;
     private final FindClinicByPhoneUsecase findClinicByPhoneUsecase;
     private final ListClinicKbUseCase listClinicKbUseCase;
+    private final ListByIdClinicKbUseCase listByIdClinicKbUseCase;
     private final RegisterClinicKbUseCase registerClinicKbUseCase;
+    private final DeleteClinicKbUseCase deleteClinicKbUseCase;
+    private final EditClinicKbUseCase editClinicKbUseCase;
+    private final SetEnabledClinicKbUseCase setEnabledClinicKbUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<Clinic> registerClinic(@RequestBody ClinicRequest request) {
@@ -52,8 +56,15 @@ public class ClinicController {
                                                                                            @RequestParam(required = false) Boolean enabled,
                                                                                            @RequestParam(required = false) String category,
                                                                                            @RequestParam(required = false) String tag,
+                                                                                           @RequestParam(required = false) String q,
                                                                                            Pageable pageable) {
-        var response = listClinicKbUseCase.execute(clinicId, enabled, category, pageable);
+        var response = listClinicKbUseCase.execute(clinicId, enabled, category, q, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/kb/{kbId}")
+    public ResponseEntity<ListClinicKbUseCase.ClinicKbEntryResponse> listKbById(@PathVariable("kbId") String kbId) {
+        var response = listByIdClinicKbUseCase.execute(kbId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -62,6 +73,27 @@ public class ClinicController {
                                                                                 @RequestBody RegisterClinicKbRequest request) {
         var response = registerClinicKbUseCase.execute(clinicId, request.title(), request.content(), request.category());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{clinicId}/kb/{kbId}")
+    public ResponseEntity<ListClinicKbUseCase.ClinicKbEntryResponse> updateKb(@PathVariable("clinicId") String clinicId,
+                                                                              @PathVariable("kbId") String kbId,
+                                                                              @RequestBody RegisterClinicKbRequest request) {
+        var response = editClinicKbUseCase.execute(kbId, clinicId, request.title(), request.content(), request.category(), request.enabled());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/kb/{kbId}")
+    public ResponseEntity<?> deleteKb(@PathVariable("kbId") String kbId) {
+        deleteClinicKbUseCase.execute(kbId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/kb/{kbId}/enabled")
+    public ResponseEntity<?> setEnabledKb(@PathVariable("kbId") String kbId,
+                                          @RequestParam(required = true) Boolean enabled) {
+        setEnabledClinicKbUseCase.execute(kbId, enabled);
+        return ResponseEntity.noContent().build();
     }
 
 }
