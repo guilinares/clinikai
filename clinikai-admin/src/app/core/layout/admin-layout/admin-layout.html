@@ -1,0 +1,55 @@
+<div class="shell">
+  <aside class="sidebar card">
+    <div class="brand">
+      <div class="logo">C</div>
+      <div class="brand-text">
+        <div class="title">ClinikAI</div>
+        <div class="subtitle">Admin</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/admin/home" class="nav-item">
+        <span class="dot"></span>
+        Início
+      </a>
+      <!-- Próximos módulos -->
+      <a routerLink="/admin/kb" class="nav-item">
+        <span class="dot"></span>
+        Base de Conhecimento
+      </a>
+      <a class="nav-item disabled" tabindex="-1">
+        <span class="dot"></span>
+        Configurações
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="mini">
+        <div class="mini-label">Clínica</div>
+        <div class="mini-value">{{ session.clinicId }}</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar card">
+      <div class="topbar-left">
+        <div class="page-title">ClinikAI Admin</div>
+        <div class="page-subtitle">Painel administrativo da clínica</div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="user">
+          <div class="user-name">{{ session.userName || "Usuário" }}</div>
+          <div class="user-meta">Sessão ativa</div>
+        </div>
+        <button class="btn btn-secondary" (click)="logout()">Sair</button>
+      </div>
+    </header>
+
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

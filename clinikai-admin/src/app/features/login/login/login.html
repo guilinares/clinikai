@@ -1,0 +1,28 @@
+<div class="wrap">
+  <div class="panel card">
+    <div class="brand">
+      <div class="mark">ClinikAI</div>
+      <div class="tagline">Painel administrativo</div>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <label class="label">Email</label>
+      <input class="input" [(ngModel)]="email" name="email" type="email" autocomplete="username" required />
+
+      <label class="label" style="margin-top:12px;">Senha</label>
+      <input class="input" [(ngModel)]="password" name="password" type="password" autocomplete="current-password" required />
+
+      @if (error) {
+        <div class="error">{{ error }}</div>
+      }
+
+      <button class="btn btn-primary submit" [disabled]="loading">
+        {{ loading ? "Entrando..." : "Entrar" }}
+      </button>
+
+      <div class="hint">
+        Dica: você pode acessar outra clínica saindo e entrando novamente.
+      </div>
+    </form>
+  </div>
+</div>

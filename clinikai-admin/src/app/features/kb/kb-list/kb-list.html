@@ -1,0 +1,121 @@
+<div class="header">
+  <div>
+    <h2 class="h2">Base de Conhecimento</h2>
+    <div class="sub">Gerencie FAQs, políticas, scripts e informações da clínica.</div>
+  </div>
+
+  <a class="btn btn-primary" routerLink="/admin/kb/new">+ Novo KB</a>
+</div>
+
+<div class="card filters">
+  <div class="grid">
+    <div>
+      <label class="label">Busca (título/conteúdo)</label>
+      <input class="input" [(ngModel)]="q" placeholder="Ex: cancelar consulta" />
+    </div>
+
+    <div>
+      <label class="label">Categoria</label>
+      <select class="input" [(ngModel)]="category">
+        <option value="">Todas</option>
+        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="label">Status</label>
+      <select class="input" [(ngModel)]="enabled">
+        <option value="">Todos</option>
+        <option value="true">Ativo</option>
+        <option value="false">Inativo</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="label">Tag</label>
+      <input class="input" [(ngModel)]="tag" placeholder="Ex: cancelamento" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" (click)="clearFilters()" [disabled]="loading()">Limpar</button>
+    <button class="btn btn-primary" (click)="applyFilters()" [disabled]="loading()">Aplicar</button>
+  </div>
+</div>
+
+<div class="card table-card">
+  <div class="table-top">
+    <div class="muted" *ngIf="data() as d">
+      Total: <b>{{ d.page.totalItems }}</b>
+      · Página <b>{{ d.page.number + 1 }}</b> de <b>{{ d.page.totalPages }}</b>
+    </div>
+
+    <div class="muted" *ngIf="loading()">Carregando…</div>
+    <div class="error" *ngIf="error()">{{ error() }}</div>
+  </div>
+
+  <div class="table-wrap" *ngIf="data() as d">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Categoria</th>
+          <th>Tags</th>
+          <th>Status</th>
+          <th>Atualizado</th>
+          <th class="right">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of d.items">
+          <td>
+            <div class="title">{{ item.title }}</div>
+            <div class="preview">{{ short(item.content) }}</div>
+          </td>
+
+          <td>
+            <span class="badge">{{ item.category }}</span>
+          </td>
+
+          <td>
+            <div class="tags">
+              <span class="tag" *ngFor="let t of (item.tags || [])">{{ t }}</span>
+              <span class="muted" *ngIf="!item.tags || item.tags.length === 0">—</span>
+            </div>
+          </td>
+
+          <td>
+            <button class="toggle" [class.off]="!item.enabled" (click)="toggleEnabled(item)">
+              <span class="knob"></span>
+              <span class="toggle-text">{{ item.enabled ? 'Ativo' : 'Inativo' }}</span>
+            </button>
+          </td>
+
+          <td class="muted">
+            {{ item.updatedAt }}
+          </td>
+
+          <td class="right">
+            <a class="btn btn-secondary small" [routerLink]="['/admin/kb', item.id, 'edit']">Editar</a>
+            <button class="btn btn-secondary small danger" (click)="remove(item)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pager" *ngIf="data() as d">
+    <button class="btn btn-secondary" (click)="prevPage()" [disabled]="!d.page.hasPrevious || loading()">
+      ← Anterior
+    </button>
+
+    <div class="muted">
+      Página {{ d.page.number + 1 }} / {{ d.page.totalPages }}
+    </div>
+
+    <button class="btn btn-secondary" (click)="nextPage()" [disabled]="!d.page.hasNext || loading()">
+      Próxima →
+    </button>
+  </div>
+</div>

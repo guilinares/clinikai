@@ -1,0 +1,109 @@
+<div class="top">
+  <div>
+    <h2 class="h2">{{ isEdit ? 'Editar KB' : 'Novo KB' }}</h2>
+    <div class="sub">
+      {{ isEdit ? 'Atualize informações da clínica com segurança.' : 'Cadastre um item novo na base de conhecimento.' }}
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <a class="btn btn-secondary" routerLink="/admin/kb">Voltar</a>
+    <button class="btn btn-primary" (click)="save()" [disabled]="saving() || loading()">
+      {{ saving() ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </div>
+</div>
+
+<div class="card form-card" *ngIf="!loading(); else loadingTpl">
+  <div class="row">
+    <div class="col">
+      <label class="label">Título</label>
+      <input
+        class="input"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+        placeholder="Ex: Horário de atendimento"
+        maxlength="200"
+      />
+      <div class="hint">{{ title().length }}/200</div>
+    </div>
+
+    <div class="col small">
+      <label class="label">Categoria</label>
+      <select class="input" [ngModel]="category()" (ngModelChange)="category.set($event)">
+        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+      </select>
+      <div class="hint">Use categorias para organizar e melhorar o RAG depois.</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label class="label">Conteúdo</label>
+      <textarea
+        class="input textarea"
+        [ngModel]="content()"
+        (ngModelChange)="content.set($event)"
+        placeholder="Escreva a informação completa..."
+        rows="10"
+      ></textarea>
+      <div class="hint">Dica: escreva de forma objetiva e com exemplos.</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label class="label">Tags</label>
+
+      <div class="tag-box">
+        <div class="chips" *ngIf="tags().length">
+          <button class="chip" type="button" *ngFor="let t of tags()" (click)="removeTag(t)">
+            {{ t }} <span class="x">×</span>
+          </button>
+        </div>
+
+        <div class="tag-input">
+          <input
+            class="input"
+            [ngModel]="tagInput()"
+            (ngModelChange)="tagInput.set($event)"
+            (keydown)="onTagKeydown($event)"
+            placeholder="Digite e pressione Enter (ou vírgula)"
+            maxlength="50"
+          />
+          <button class="btn btn-secondary" type="button" (click)="addTag()">Adicionar</button>
+        </div>
+      </div>
+
+      <div class="hint">Clique em uma tag para remover. Máx: 20 tags.</div>
+    </div>
+
+    <div class="col small">
+      <label class="label">Status</label>
+
+      <button class="toggle" [class.off]="!enabled()" type="button" (click)="enabled.set(!enabled())">
+        <span class="knob"></span>
+        <span class="toggle-text">{{ enabled() ? 'Ativo' : 'Inativo' }}</span>
+      </button>
+
+      <div class="hint">Inativo não aparece para o agente/busca.</div>
+    </div>
+  </div>
+
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+
+  <div class="footer">
+    <button class="btn btn-secondary" type="button" (click)="cancel()" [disabled]="saving()">
+      Cancelar
+    </button>
+    <button class="btn btn-primary" type="button" (click)="save()" [disabled]="saving()">
+      {{ saving() ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="card form-card">
+    <div class="muted">Carregando KB…</div>
+  </div>
+</ng-template>
