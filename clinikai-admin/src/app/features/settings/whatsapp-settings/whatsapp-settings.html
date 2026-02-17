@@ -1,0 +1,84 @@
+<div class="panel">
+  <div class="top">
+    <div>
+      <div class="title">WhatsApp</div>
+      <div class="sub">Verifique o status e conecte seu WhatsApp via QR Code.</div>
+    </div>
+
+    <button class="btn btn-secondary" (click)="refreshStatus()" [disabled]="loadingStatus()">
+      {{ loadingStatus() ? 'Atualizando...' : 'Atualizar status' }}
+    </button>
+  </div>
+
+  <div class="card section" *ngIf="status() as s">
+    <div class="section-header">
+      <div class="section-title">Status</div>
+      <span class="badge" [class]="badgeClass()">{{ s.status }}</span>
+    </div>
+
+    <div class="grid">
+      <div class="item">
+        <span class="label">Conectado</span>
+        <span class="value">{{ s.connected ? 'Sim' : 'Não' }}</span>
+      </div>
+
+      <div class="item" *ngIf="createdAtText() as dt">
+        <span class="label">Atualizado</span>
+        <span class="value">{{ dt }}</span>
+      </div>
+
+      <div class="item" *ngIf="s.lastErrorCode">
+        <span class="label">Código de erro</span>
+        <span class="value">{{ s.lastErrorCode }}</span>
+      </div>
+    </div>
+
+    <div class="muted" *ngIf="s.message">{{ s.message }}</div>
+    <div class="muted" *ngIf="s.lastErrorMessage">{{ s.lastErrorMessage }}</div>
+
+    <div class="actions">
+      <button class="btn btn-primary"
+              (click)="openQr()"
+              [disabled]="loadingQr() || !canShowQr()">
+        {{ loadingQr() ? 'Carregando QR...' : (qrMode() ? 'Atualizando QR...' : 'Conectar (QR Code)') }}
+      </button>
+
+      <button class="btn btn-secondary" type="button" (click)="closeQr()" [disabled]="!qrMode()">
+        Fechar QR
+      </button>
+    </div>
+
+    <div class="muted" *ngIf="s.status === 'SUSPENDED'">
+      A integração está suspensa. Entre em contato com o suporte para reativar.
+    </div>
+  </div>
+
+  <div class="card section alert danger" *ngIf="apiError() as e">
+    <div class="alert-title">{{ e.message }}</div>
+    <div class="muted">Código: {{ e.code }}</div>
+
+    <div class="muted" *ngIf="e.code === 'WHATSAPP_SUBSCRIPTION_REQUIRED'">
+      Entre em contato com o suporte da clínica para ativar a integração.
+    </div>
+  </div>
+
+  <div class="card section alert danger" *ngIf="genericError() as ge">
+    {{ ge }}
+  </div>
+
+  <div class="card section qr" *ngIf="qrMode() && qr() as q">
+    <div class="section-header">
+      <div class="section-title">Conectar via QR Code</div>
+      <span class="hint" *ngIf="q.expiresInSeconds">expira em ~{{ q.expiresInSeconds }}s</span>
+    </div>
+
+    <div class="qr-wrap">
+        <img *ngIf="qrImageSrc() as src" class="qr" [src]="src" alt="QR Code WhatsApp" />
+        <div class="muted">
+        Abra o WhatsApp no celular → <strong>Aparelhos conectados</strong> → <strong>Conectar um aparelho</strong> e escaneie o QR.
+        <br />
+        Se expirar, o QR será atualizado automaticamente.
+      </div>
+    </div>
+  </div>
+</div>

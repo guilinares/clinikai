@@ -1,0 +1,138 @@
+.settings-section{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-head .h3{
+  margin: 0;
+  color: var(--c-navy);
+}
+
+.section-head .muted{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card-inner{
+  padding: 16px;
+  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.45);
+}
+
+.row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.col{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.col.right{
+  align-items: flex-end;
+}
+
+.label{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-weight: 650;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.55);
+  color: var(--c-navy);
+}
+
+.status.ok{
+  border-color: rgba(41,99,116,.35);
+  background: rgba(41,99,116,.10);
+  color: var(--c-teal);
+}
+
+.status.warn{
+  border-color: rgba(98,159,173,.45);
+  background: rgba(98,159,173,.14);
+  color: var(--c-navy);
+}
+
+.hint{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.error{
+  background: rgba(176, 0, 32, 0.10);
+  border: 1px solid rgba(176, 0, 32, 0.18);
+  color: #b00020;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.toast{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(41,99,116,.35);
+  background: rgba(41,99,116,.10);
+  color: var(--c-teal);
+}
+
+.actions{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.btn.small{
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* opcional */
+.btn.danger{
+  background: rgba(176, 0, 32, 0.08);
+  border: 1px solid rgba(176, 0, 32, 0.18);
+  color: #b00020;
+}
+
+@media (max-width: 720px){
+  .row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .col.right{
+    align-items: stretch;
+  }
+
+  .actions{
+    min-width: auto;
+  }
+}

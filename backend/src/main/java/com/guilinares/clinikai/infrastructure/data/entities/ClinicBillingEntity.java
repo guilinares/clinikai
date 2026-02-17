@@ -22,15 +22,6 @@ public class ClinicBillingEntity {
     @Column(name = "clinic_id")
     private UUID clinicId;
 
-    /**
-     * Relacionamento 1:1 com Clinic
-     * Usa o mesmo ID como PK e FK
-     */
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId
-    @JoinColumn(name = "clinic_id")
-    private ClinicEntity clinic;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private BillingProvider provider;

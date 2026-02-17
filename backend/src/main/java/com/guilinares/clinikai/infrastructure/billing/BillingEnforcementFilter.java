@@ -35,6 +35,11 @@ public class BillingEnforcementFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        if (path.startsWith("/api/auth")) return true;
+        if (path.startsWith("/api/billing/subscribe/basic")) return true;
+        if (path.startsWith("/api/webhooks/asaas")) return true;
+        // ✅ KB liberado
+        if (path.contains("/kb")) return true;
         return WHITELIST.stream().anyMatch(path::startsWith);
     }
 

@@ -1,6 +1,6 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
-import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
+import com.guilinares.clinikai.domain.enums.ClinicKbCategory;
 import jakarta.persistence.*;
 import lombok.*;
 

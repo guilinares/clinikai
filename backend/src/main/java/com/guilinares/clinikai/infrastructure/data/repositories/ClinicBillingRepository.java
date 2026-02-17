@@ -12,4 +12,7 @@ public interface ClinicBillingRepository extends JpaRepository<ClinicBillingEnti
 
     @Query("select b.status from ClinicBillingEntity b where b.clinicId = :clinicId")
     Optional<String> findStatusByClinicId(@Param("clinicId") UUID clinicId);
+    Optional<ClinicBillingEntity> findByAsaasSubscriptionId(String asaasSubscriptionId);
+
+    Optional<ClinicBillingEntity> findByClinicId(UUID clinicId);
 }

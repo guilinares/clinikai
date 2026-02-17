@@ -1,0 +1,41 @@
+<div class="header">
+  <div>
+    <h2 class="h2">Configurações</h2>
+    <div class="sub">Integrações e pagamentos da clínica.</div>
+  </div>
+</div>
+
+<div class="card shell">
+  <div class="tabs">
+    <a
+      class="tab"
+      routerLink="/admin/settings/billing"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Pagamentos
+    </a>
+
+    <a
+      class="tab"
+      routerLink="/admin/settings/google"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Google
+    </a>
+
+    <a
+      class="tab"
+      routerLink="/admin/settings/whatsapp"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      WhatsApp
+    </a>
+  </div>
+
+  <div class="body">
+    <router-outlet></router-outlet>
+  </div>
+</div>

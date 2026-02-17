@@ -1,10 +1,15 @@
 package com.guilinares.clinikai.presentation.controllers;
 
+import com.guilinares.clinikai.application.billing.exceptions.HandleBillingException;
 import com.guilinares.clinikai.application.clinic.exceptions.FailDeleteKbException;
 import com.guilinares.clinikai.application.clinic.exceptions.InvalidCategoryException;
 import com.guilinares.clinikai.application.clinic.exceptions.NotClinicKbFound;
 import com.guilinares.clinikai.application.clinic.exceptions.TelefoneJaPossuiClinicaException;
+import com.guilinares.clinikai.domain.exceptions.WhatsappSubscriptionRequiredException;
+import com.guilinares.clinikai.infrastructure.billing.exceptions.AsaasWebhookNotSuportedEvent;
 import com.guilinares.clinikai.presentation.controllers.dto.ApiError;
+import com.guilinares.clinikai.presentation.controllers.dto.ApiErrorResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,5 +37,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FailDeleteKbException.class)
     public ResponseEntity<ApiError> handleFailDeleteKbException(FailDeleteKbException e) {
         return ResponseEntity.badRequest().body(new ApiError("Falha ao deletar KB."));
+    }
+
+    @ExceptionHandler(AsaasWebhookNotSuportedEvent.class)
+    public ResponseEntity<Object> handleNotSupportedAsaasWebhookEvent(AsaasWebhookNotSuportedEvent e) {
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(HandleBillingException.class)
+    public ResponseEntity<Object> handleNotSupportedAsaasWebhookEvent(HandleBillingException e) {
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(WhatsappSubscriptionRequiredException.class)
+    public ResponseEntity<ApiErrorResponse> handleSubscriptionRequired(WhatsappSubscriptionRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED) // 428 é bem apropriado
+                .body(ApiErrorResponse.of(
+                        "WHATSAPP_SUBSCRIPTION_REQUIRED",
+                        "Sua instância do WhatsApp precisa ser assinada para continuar enviando mensagens.",
+                        "SUBSCRIBE_INSTANCE"
+                ));
     }
 }

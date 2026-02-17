@@ -22,6 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         router.navigateByUrl('/admin/login');
       }
       if (err.status === 403 && err?.error?.code === 'BILLING_INACTIVE') {
+        alert('Seu plano de assinatura está inativo. Por favor, atualize suas informações de pagamento para continuar usando o serviço.');
         router.navigateByUrl('/admin/settings/billing');
       }
       return throwError(() => err);

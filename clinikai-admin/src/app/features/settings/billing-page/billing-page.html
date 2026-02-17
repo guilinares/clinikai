@@ -1,0 +1,60 @@
+<div class="settings-section">
+  <div class="section-head">
+    <h3 class="h3">Pagamentos</h3>
+    <div class="muted">Plano BASIC · Pix (Asaas)</div>
+  </div>
+
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+  <div class="muted" *ngIf="loading()">Carregando…</div>
+
+  <div class="card">
+    <div class="card-inner" *ngIf="data() as d">
+      <div class="row">
+        <div class="col">
+          <div class="label">Status</div>
+          <div class="status" [class.ok]="d.status==='ACTIVE'" [class.warn]="d.status==='PENDING' || d.status==='PAST_DUE'">
+            {{ d.status }}
+          </div>
+        </div>
+
+        <div class="col right">
+          <button class="btn btn-secondary" (click)="refresh()" [disabled]="loading()">Atualizar</button>
+        </div>
+      </div>
+
+      <div class="actions" *ngIf="d.status === 'NO_SUBSCRIPTION' || d.status === 'CANCELED'">
+        <button class="btn btn-primary" (click)="subscribe()" [disabled]="loading()">
+          Assinar BASIC com Pix
+        </button>
+        <div class="hint">O sistema será liberado automaticamente após confirmação do pagamento.</div>
+      </div>
+
+      <div class="pix" *ngIf="(d.status === 'PENDING' || d.status === 'PAST_DUE')">
+        <div class="pix-grid" *ngIf="pix() as p; else pixLoading">
+          <div class="qr">
+            <img [src]="'data:image/png;base64,' + p.encodedImage" alt="QR Code Pix" />
+          </div>
+
+          <div class="pix-info">
+            <div class="label">Pix copia e cola</div>
+            <div class="payload">{{ p.payload }}</div>
+            <div class="pix-actions">
+              <button class="btn btn-primary" (click)="copyPix()">Copiar</button>
+              <button class="btn btn-secondary" (click)="loadPix()">Atualizar QR</button>
+            </div>
+            <div class="hint">Após pagar, clique em “Atualizar” ou aguarde a liberação automática.</div>
+          </div>
+        </div>
+
+        <ng-template #pixLoading>
+          <div class="muted">Gerando Pix…</div>
+        </ng-template>
+      </div>
+
+      <div class="ok-box" *ngIf="d.status === 'ACTIVE'">
+        <div class="ok-title">Plano ativo ✅</div>
+        <div class="muted">Sua clínica está liberada para usar todos os recursos.</div>
+      </div>
+    </div>
+  </div>
+</div>

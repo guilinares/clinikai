@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ClinicRepositoryPort {
 
-    Clinic save(Clinic clinic);
+    ClinicEntity save(Clinic clinic);
     Optional<ClinicEntity> findById(UUID clinicId);
     Optional<ClinicEntity> findByPhone(String phone);
     ClinicEntity getReference(UUID clinicId);

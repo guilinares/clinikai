@@ -1,7 +1,6 @@
 package com.guilinares.clinikai.infrastructure.data.adapters;
 
 import com.guilinares.clinikai.application.clinic.ports.ClinicKbRepositoryPort;
-import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
 import com.guilinares.clinikai.infrastructure.data.entities.ClinicKbEntryEntity;
 import com.guilinares.clinikai.infrastructure.data.repositories.ClinicKbEntryRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

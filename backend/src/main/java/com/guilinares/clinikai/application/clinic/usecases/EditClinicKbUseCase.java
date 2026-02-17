@@ -1,15 +1,11 @@
 package com.guilinares.clinikai.application.clinic.usecases;
 
-import com.guilinares.clinikai.application.clinic.exceptions.ClinicaNaoEncontradaException;
 import com.guilinares.clinikai.application.clinic.exceptions.KbNaoEncontradoException;
 import com.guilinares.clinikai.application.clinic.ports.ClinicKbRepositoryPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
-import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
-import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
-import com.guilinares.clinikai.infrastructure.data.entities.ClinicKbEntryEntity;
+import com.guilinares.clinikai.domain.enums.ClinicKbCategory;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor

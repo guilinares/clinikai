@@ -16,8 +16,8 @@ public class GoogleUtilsAdapter implements GoogleUtils {
     private final GoogleProperties props;
 
     @Override
-    public String buildAuthorizationUrl(UUID clinicId) {
-        return new GoogleAuthorizationCodeRequestUrl(
+    public GoogleUrlResponse buildAuthorizationUrl(UUID clinicId) {
+        String url = new GoogleAuthorizationCodeRequestUrl(
                 props.clientId(),
                 props.redirectUri(),
                 List.of("https://www.googleapis.com/auth/calendar.events")
@@ -25,5 +25,10 @@ public class GoogleUtilsAdapter implements GoogleUtils {
                 .setAccessType("offline")
                 .set("prompt", "consent")
                 .setState(clinicId.toString())
-                .build();    }
+                .build();
+        return new GoogleUrlResponse(url);
+    }
+
+    public record GoogleUrlResponse(String url) {
+    }
 }

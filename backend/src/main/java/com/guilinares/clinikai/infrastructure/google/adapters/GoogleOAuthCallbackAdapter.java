@@ -11,7 +11,9 @@ import com.guilinares.clinikai.infrastructure.data.repositories.GoogleCalendarIn
 import com.guilinares.clinikai.infrastructure.google.GoogleProperties;
 import com.guilinares.clinikai.infrastructure.google.exceptions.GoogleCallbackException;
 import com.guilinares.clinikai.infrastructure.security.crypto.CryptoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,8 +28,11 @@ public class GoogleOAuthCallbackAdapter implements GoogleCallback {
     private final GoogleCalendarIntegrationRepository repository;
     private final CryptoService cryptoService;
 
+    @Value("${app.frontend-base-url}")
+    private String frontendUrl;
+
     @Override
-    public void handle(String code, UUID clinicId) {
+    public String handle(String code, UUID clinicId) {
         try {
             GoogleTokenResponse tokenResponse =
                     new GoogleAuthorizationCodeTokenRequest(
@@ -57,8 +62,9 @@ public class GoogleOAuthCallbackAdapter implements GoogleCallback {
             );
             integration.setConnectedAt(Instant.now());
             repository.save(integration);
+            return frontendUrl + "/admin/settings/google?connected=1";
         } catch (Exception e) {
-            throw new GoogleCallbackException(e.getMessage());
+            return frontendUrl + "/admin/settings/google?connected=0&error=" + e.getMessage();
         }
     }
 }

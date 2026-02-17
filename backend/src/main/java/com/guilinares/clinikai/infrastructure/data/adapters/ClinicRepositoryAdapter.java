@@ -20,10 +20,9 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
     private final ClinicRepository repo;
 
     @Override
-    public Clinic save(Clinic clinic) {
+    public ClinicEntity save(Clinic clinic) {
         ClinicEntity entity = toEntity(clinic);
-        ClinicEntity saved = repo.save(entity);
-        return toDomain(saved);
+        return repo.save(entity);
     }
 
     @Override

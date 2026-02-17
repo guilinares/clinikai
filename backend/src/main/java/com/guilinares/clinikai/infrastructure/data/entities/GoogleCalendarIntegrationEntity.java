@@ -1,5 +1,6 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,4 +36,9 @@ public class GoogleCalendarIntegrationEntity {
     private Instant connectedAt;
 
     private Instant revokedAt;
+
+    @JsonIgnore
+    public boolean isActive() {
+        return revokedAt == null;
+    }
 }

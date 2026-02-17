@@ -1,0 +1,48 @@
+<div class="settings-section">
+  <div class="section-head">
+    <h3 class="h3">Google</h3>
+    <div class="muted">Conecte sua conta para sincronizar agenda e automações.</div>
+  </div>
+
+  <div class="toast" *ngIf="toast()">
+    <div>{{ toast() }}</div>
+    <button class="btn btn-secondary small" (click)="clearToast()">Ok</button>
+  </div>
+
+  <div class="error" *ngIf="error()">{{ error() }}</div>
+  <div class="muted" *ngIf="loading()">Carregando…</div>
+
+  <div class="card-inner" *ngIf="status() as s">
+    <div class="row">
+      <div class="col">
+        <div class="label">Status</div>
+
+        <div class="status" [class.ok]="s.connected" [class.warn]="!s.connected">
+          {{ s.connected ? 'Conectado' : 'Não conectado' }}
+        </div>
+
+        <div class="hint" *ngIf="s.connected && s.email">
+          Conectado como <b>{{ s.email }}</b>
+        </div>
+
+        <div class="hint" *ngIf="!s.connected">
+          Ao conectar, você autoriza o ClinikAI a acessar os recursos necessários (ex: Google Calendar) da sua conta.
+        </div>
+      </div>
+
+      <div class="col right actions">
+        <button class="btn btn-primary" (click)="connect()" [disabled]="loading()">
+          {{ s.connected ? 'Reconectar Google' : 'Conectar Google' }}
+        </button>
+
+        <button *ngIf="s.connected" class="btn btn-secondary danger" (click)="disconnect()" [disabled]="loading()">
+          Desconectar
+        </button>
+
+        <button class="btn btn-secondary" (click)="loadStatus()" [disabled]="loading()">
+          Atualizar status
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

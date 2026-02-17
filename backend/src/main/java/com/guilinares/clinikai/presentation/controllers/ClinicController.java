@@ -3,10 +3,8 @@ package com.guilinares.clinikai.presentation.controllers;
 import com.guilinares.clinikai.application.clinic.dto.ClinicRequest;
 import com.guilinares.clinikai.application.clinic.usecases.*;
 import com.guilinares.clinikai.domain.clinic.Clinic;
-import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
 import com.guilinares.clinikai.infrastructure.pagination.PagedResponse;
 import com.guilinares.clinikai.infrastructure.security.SecurityUserPrincipal;
-import com.guilinares.clinikai.presentation.controllers.dto.AuthResponse;
 import com.guilinares.clinikai.presentation.controllers.dto.RegisterClinicKbRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/clinics")

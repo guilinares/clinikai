@@ -4,7 +4,7 @@ import com.guilinares.clinikai.application.clinic.exceptions.ClinicaNaoEncontrad
 import com.guilinares.clinikai.application.clinic.exceptions.NotClinicKbFound;
 import com.guilinares.clinikai.application.clinic.ports.ClinicKbRepositoryPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
-import com.guilinares.clinikai.domain.clinic.ClinicKbCategory;
+import com.guilinares.clinikai.domain.enums.ClinicKbCategory;
 import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
 import com.guilinares.clinikai.infrastructure.data.entities.ClinicKbEntryEntity;
 import com.guilinares.clinikai.infrastructure.pagination.PagedResponse;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

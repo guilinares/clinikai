@@ -1,4 +1,4 @@
-package com.guilinares.clinikai.domain.clinic;
+package com.guilinares.clinikai.domain.enums;
 
 import com.guilinares.clinikai.application.clinic.exceptions.InvalidCategoryException;
 

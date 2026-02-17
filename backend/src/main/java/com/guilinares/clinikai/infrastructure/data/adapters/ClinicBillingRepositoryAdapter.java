@@ -10,6 +10,10 @@ import com.guilinares.clinikai.infrastructure.data.repositories.ClinicBillingRep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class ClinicBillingRepositoryAdapter implements ClinicBillingRepositoryPort {
@@ -17,9 +21,13 @@ public class ClinicBillingRepositoryAdapter implements ClinicBillingRepositoryPo
     private final ClinicBillingRepository billingRepo;
 
     @Override
+    public ClinicBillingEntity save(ClinicBillingEntity entity) {
+        return billingRepo.save(entity);
+    }
+
+    @Override
     public ClinicBillingEntity createClinicBilling(ClinicEntity clinic) {
         ClinicBillingEntity billing = ClinicBillingEntity.builder()
-                .clinic(clinic)
                 .clinicId(clinic.getId())
                 .status(BillingStatus.NO_SUBSCRIPTION)
                 .plan(BillingPlan.BASIC)
@@ -27,4 +35,20 @@ public class ClinicBillingRepositoryAdapter implements ClinicBillingRepositoryPo
                 .build();
         return billingRepo.save(billing);
     }
+
+    @Override
+    public Optional<ClinicBillingEntity> findByClinidId(UUID clinicID) {
+        return billingRepo.findByClinicId(clinicID);
+    }
+
+    @Override
+    public Optional<ClinicBillingEntity> findByAsaasSubscriptionId(String assasSubscriptionId) {
+        return billingRepo.findByAsaasSubscriptionId(assasSubscriptionId);
+    }
+
+    @Override
+    public List<ClinicBillingEntity> findAll() {
+        return billingRepo.findAll();
+    }
+
 }

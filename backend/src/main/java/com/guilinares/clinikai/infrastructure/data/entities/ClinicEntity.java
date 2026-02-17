@@ -30,6 +30,12 @@ public class ClinicEntity {
     @Column(name = "whatsapp_number", length = 30)
     private String whatsappNumber;
 
+    @Column(name = "email", length = 70)
+    private String email;
+
+    @Column(name = "billing_document", length = 14)
+    private String billingDocument;
+
     @Column(length = 50, nullable = false)
     private String timezone;
 

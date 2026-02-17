@@ -1,6 +1,7 @@
 package com.guilinares.clinikai.application.clinic;
 
 import com.guilinares.clinikai.application.clinic.ports.ClinicBillingRepositoryPort;
+import com.guilinares.clinikai.application.clinic.ports.ClinicEventPublisherPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicKbRepositoryPort;
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
 import com.guilinares.clinikai.application.clinic.usecases.*;
@@ -11,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class ClinicUseCaseConfig {
 
     @Bean
-    public RegisterClinicUseCase registerClinicUseCase(ClinicRepositoryPort port, ClinicBillingRepositoryPort clinicBillingRepositoryPort) {
-        return new RegisterClinicUseCase(port, clinicBillingRepositoryPort);
+    public RegisterClinicUseCase registerClinicUseCase(ClinicRepositoryPort port, ClinicBillingRepositoryPort clinicBillingRepositoryPort, ClinicEventPublisherPort eventPublisherPort) {
+        return new RegisterClinicUseCase(port, clinicBillingRepositoryPort, eventPublisherPort);
     }
 
     @Bean
