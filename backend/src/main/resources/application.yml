@@ -40,7 +40,7 @@ spring:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org.flywaydb: INFO
     org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: TRACE

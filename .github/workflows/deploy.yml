@@ -198,11 +198,23 @@ jobs:
             echo "=== Status dos containers ==="
             $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml ps
 
-            # Health check
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || echo "000")
-            echo "Health check: $HTTP_STATUS"
+            # Health check com retry (Spring Boot leva ~30s para iniciar)
+            echo "Aguardando backend inicializar..."
+            HTTP_STATUS="000"
+            for i in $(seq 1 18); do
+              HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health 2>/dev/null || echo "000")
+              echo "Tentativa $i/18: $HTTP_STATUS"
+              if [ "$HTTP_STATUS" = "200" ]; then
+                break
+              fi
+              sleep 5
+            done
+
             if [ "$HTTP_STATUS" != "200" ]; then
+              echo "=== Backend logs ==="
               $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml logs --tail=50 backend
+              echo "=== Nginx logs ==="
+              $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml logs --tail=30 nginx
               exit 1
             fi
 
