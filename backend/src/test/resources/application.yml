@@ -1,0 +1,49 @@
+# Override completo para testes — src/test/resources tem prioridade no classpath de testes
+google:
+  oauth:
+    client-id: test-client-id
+    client-secret: test-client-secret
+    redirect-uri: http://localhost:8080/api/integrations/google/callback
+
+asaas:
+  base-url: https://api.asaas.com/v3
+  api-key: test-asaas-key
+
+security:
+  crypto:
+    master-key-base64: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clinikai
+    username: clinikai
+    password: clinikai
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    url: jdbc:postgresql://localhost:5432/clinikai
+    user: clinikai
+    password: clinikai
+    enabled: true
+    baseline-on-migrate: true
+
+app:
+  webhooks:
+    zapi:
+      secret: test-zapi-secret
+  security:
+    jwt:
+      secret: test-jwt-secret-for-ci-only-must-be-at-least-32-chars
+      access-token-minutes: 60
+      issuer: clinikai
+
+zapi:
+  base-url: https://api.z-api.io
+  instance-id: test-instance-id
+  token: test-token
+  client-token: test-client-token
+
+n8n:
+  webhook-url: https://test.example.com/webhook
+  secret: test-secret
