@@ -187,7 +187,19 @@ jobs:
             echo "IMAGE_TAG=${IMAGE_TAG}" >> $APP_DIR/.env.prod
             echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $APP_DIR/.env.prod
 
-            # Pull e restart
+            # Garante que o Postgres está rodando (necessário no primeiro deploy)
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d postgres
+            echo "Aguardando PostgreSQL ficar saudável..."
+            for i in $(seq 1 12); do
+              if $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml exec -T postgres pg_isready -U clinikai > /dev/null 2>&1; then
+                echo "PostgreSQL pronto!"
+                break
+              fi
+              echo "Aguardando... $i/12"
+              sleep 5
+            done
+
+            # Pull e restart backend e nginx
             $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml pull backend
             $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d --no-deps backend nginx
 
