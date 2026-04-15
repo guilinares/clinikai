@@ -122,6 +122,19 @@ jobs:
     environment: production
 
     steps:
+      - name: Escreve .env.prod na EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/clinikai
+            cat > /home/ubuntu/clinikai/.env.prod << 'ENVEOF'
+            ${{ secrets.ENV_PROD }}
+            ENVEOF
+            chmod 600 /home/ubuntu/clinikai/.env.prod
+
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
