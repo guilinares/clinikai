@@ -86,8 +86,4 @@ jobs:
       # Apply só roda no push para main (não em PRs)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          terraform apply \
-            -var="ec2_public_key=${{ secrets.EC2_PUBLIC_KEY }}" \
-            -auto-approve \
-            tfplan
+        run: terraform apply -auto-approve tfplan
