@@ -20,9 +20,9 @@ spring:
     name: clinikai
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinikai
-    username: clinikai
-    password: clinikai
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/clinikai}
+    username: ${SPRING_DATASOURCE_USERNAME:clinikai}
+    password: ${SPRING_DATASOURCE_PASSWORD:clinikai}
 
   jpa:
     hibernate:
@@ -32,9 +32,6 @@ spring:
         format_sql: true
 
   flyway:
-    url: jdbc:postgresql://localhost:5432/clinikai
-    password: clinikai
-    user: clinikai
     enabled: true
     baseline-on-migrate: true
 
