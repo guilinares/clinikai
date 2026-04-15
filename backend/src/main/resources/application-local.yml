@@ -58,3 +58,7 @@ app:
       access-token-minutes: 60
       issuer: clinikai
   frontend-base-url: http://localhost:4200
+
+n8n:
+  webhook-url: https://n8n.srv1303736.hstgr.cloud/webhook-test/flow-refiner
+  secret: seu-secret-aqui

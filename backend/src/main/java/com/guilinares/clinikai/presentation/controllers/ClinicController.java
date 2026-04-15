@@ -5,13 +5,18 @@ import com.guilinares.clinikai.application.clinic.usecases.*;
 import com.guilinares.clinikai.domain.clinic.Clinic;
 import com.guilinares.clinikai.infrastructure.pagination.PagedResponse;
 import com.guilinares.clinikai.infrastructure.security.SecurityUserPrincipal;
+import com.guilinares.clinikai.presentation.controllers.dto.PublishFlowRequest;
 import com.guilinares.clinikai.presentation.controllers.dto.RegisterClinicKbRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/clinics")
@@ -28,6 +33,9 @@ public class ClinicController {
     private final DeleteClinicKbUseCase deleteClinicKbUseCase;
     private final EditClinicKbUseCase editClinicKbUseCase;
     private final SetEnabledClinicKbUseCase setEnabledClinicKbUseCase;
+    private final SetClinicFlowUseCase setClinicFlowUseCase;
+    private final GetClinicFlowUseCase getClinicFlowUseCase;
+    private final GetClinicFlowPromptUseCase getClinicFlowPromptUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<Clinic> registerClinic(@RequestBody ClinicRequest request) {
@@ -89,6 +97,31 @@ public class ClinicController {
     public ResponseEntity<?> setEnabledKb(@PathVariable("kbId") String kbId,
                                           @RequestParam(required = true) Boolean enabled) {
         setEnabledClinicKbUseCase.execute(kbId, enabled);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{clinicId}/flow", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getFlow(@PathVariable("clinicId") UUID clinicId) {
+        String flowConfig = getClinicFlowUseCase.execute(clinicId);
+        if (flowConfig == null || flowConfig.isBlank()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(flowConfig);
+    }
+
+    @GetMapping("/{clinicId}/flow/prompt")
+    public ResponseEntity<?> getFlowPrompt(@PathVariable("clinicId") UUID clinicId) {
+        String prompt = getClinicFlowPromptUseCase.execute(clinicId);
+        if (prompt == null || prompt.isBlank()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(Map.of("prompt", prompt));
+    }
+
+    @PostMapping("/{clinicId}/flow/publish")
+    public ResponseEntity<?> publishFlow(@PathVariable("clinicId") UUID clinicId,
+                                         @RequestBody PublishFlowRequest request) {
+        setClinicFlowUseCase.execute(clinicId, request.getFlow());
         return ResponseEntity.noContent().build();
     }
 

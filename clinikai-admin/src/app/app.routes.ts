@@ -26,6 +26,7 @@ export const routes: Routes = [
           import('./features/auth/placeholder/placeholder').then(m => m.PlaceholderComponent),
       },
       { path: 'flow', loadComponent: () => import('./features/flow-embed/flow-embed').then(m => m.FlowEmbed) },
+      { path: 'calendar', loadComponent: () => import('./features/calendar/calendar-page/calendar-page').then(m => m.CalendarPage) },
       {
         path: 'settings',
         loadComponent: () => import('./features/settings/settings-shell/settings-shell').then(m => m.SettingsShell),

@@ -1,0 +1,252 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-navy);
+  margin: 0 0 4px;
+}
+
+.sub {
+  font-size: 13px;
+  color: rgba(12, 44, 85, 0.60);
+}
+
+.alert-error {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(200, 30, 30, 0.08);
+  border: 1px solid rgba(200, 30, 30, 0.20);
+  color: rgba(160, 20, 20, 0.90);
+  font-size: 13px;
+}
+
+.loading-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--c-navy), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.calendar-card {
+  padding: 20px;
+}
+
+/* FullCalendar overrides */
+:host ::ng-deep {
+  .fc {
+    font-family: inherit;
+  }
+
+  .fc-toolbar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--c-navy);
+    text-transform: capitalize;
+  }
+
+  .fc-button {
+    background: rgba(12, 44, 85, 0.08) !important;
+    border: 1px solid rgba(12, 44, 85, 0.14) !important;
+    color: var(--c-navy) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 5px 12px !important;
+    box-shadow: none !important;
+    transition: background 0.15s;
+  }
+
+  .fc-button:hover {
+    background: rgba(12, 44, 85, 0.14) !important;
+  }
+
+  .fc-button-active,
+  .fc-button-primary:not(:disabled).fc-button-active {
+    background: var(--c-navy) !important;
+    color: #fff !important;
+    border-color: var(--c-navy) !important;
+  }
+
+  .fc-today-button:disabled {
+    opacity: 0.4 !important;
+  }
+
+  .fc-col-header-cell-cushion,
+  .fc-daygrid-day-number {
+    color: var(--c-navy);
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .fc-day-today {
+    background: rgba(12, 44, 85, 0.04) !important;
+  }
+
+  .fc-daygrid-day-top {
+    justify-content: center;
+  }
+
+  .fc-event {
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    padding: 1px 6px !important;
+    cursor: pointer;
+  }
+
+  .fc-event:hover {
+    opacity: 0.85;
+  }
+
+  .fc-more-link {
+    color: var(--c-navy);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .fc-timegrid-slot-label-cushion {
+    font-size: 11px;
+    color: rgba(12, 44, 85, 0.55);
+  }
+
+  /* highlight ao selecionar */
+  .fc-highlight {
+    background: rgba(12, 44, 85, 0.08) !important;
+  }
+
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal {
+  width: 460px;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(12, 44, 85, 0.08);
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-navy);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgba(12, 44, 85, 0.50);
+  padding: 4px;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--c-navy);
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(12, 44, 85, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  font-size: 13px;
+  color: var(--c-navy);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(12, 44, 85, 0.08);
+}
+
+/* Form fields inside modal */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* Danger button */
+.btn-danger {
+  background: rgba(180, 30, 30, 0.08);
+  border: 1px solid rgba(180, 30, 30, 0.20);
+  color: rgba(140, 20, 20, 0.90);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(180, 30, 30, 0.14);
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

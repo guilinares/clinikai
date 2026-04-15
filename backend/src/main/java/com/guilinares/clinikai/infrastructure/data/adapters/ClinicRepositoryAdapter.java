@@ -6,6 +6,7 @@ import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
 import com.guilinares.clinikai.infrastructure.data.repositories.ClinicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -40,5 +41,17 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
     @Override
     public ClinicEntity getReference(UUID clinicId) {
         return repo.getReferenceById(clinicId);
+    }
+
+    @Override
+    @Transactional
+    public void updateFlow(UUID clinicId, String flowJson) {
+        repo.updateFlowConfig(clinicId, flowJson);
+    }
+
+    @Override
+    @Transactional
+    public void updateFlowPrompt(UUID clinicId, String flowPrompt) {
+        repo.updateFlowPrompt(clinicId, flowPrompt);
     }
 }

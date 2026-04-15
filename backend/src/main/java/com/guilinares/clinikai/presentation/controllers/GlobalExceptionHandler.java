@@ -1,6 +1,9 @@
 package com.guilinares.clinikai.presentation.controllers;
 
 import com.guilinares.clinikai.application.billing.exceptions.HandleBillingException;
+import com.guilinares.clinikai.application.google.exceptions.EventoNaoEncontradoException;
+import com.guilinares.clinikai.application.google.exceptions.HorarioIndisponivelException;
+import com.guilinares.clinikai.application.clinic.exceptions.ClinicaNaoEncontradaException;
 import com.guilinares.clinikai.application.clinic.exceptions.FailDeleteKbException;
 import com.guilinares.clinikai.application.clinic.exceptions.InvalidCategoryException;
 import com.guilinares.clinikai.application.clinic.exceptions.NotClinicKbFound;
@@ -16,6 +19,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ClinicaNaoEncontradaException.class)
+    public ResponseEntity<ApiError> handleClinicaNaoEncontrada(ClinicaNaoEncontradaException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError(e.getMessage()));
+    }
 
     @ExceptionHandler(TelefoneJaPossuiClinicaException.class)
     public ResponseEntity<ApiError> handleTelefoneJaPossuiClinicaException(TelefoneJaPossuiClinicaException e) {
@@ -47,6 +55,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandleBillingException.class)
     public ResponseEntity<Object> handleNotSupportedAsaasWebhookEvent(HandleBillingException e) {
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(HorarioIndisponivelException.class)
+    public ResponseEntity<ApiError> handleHorarioIndisponivel(HorarioIndisponivelException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(e.getMessage()));
+    }
+
+    @ExceptionHandler(EventoNaoEncontradoException.class)
+    public ResponseEntity<ApiError> handleEventoNaoEncontrado(EventoNaoEncontradoException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError(e.getMessage()));
     }
 
     @ExceptionHandler(WhatsappSubscriptionRequiredException.class)

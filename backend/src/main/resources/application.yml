@@ -56,6 +56,10 @@ app:
 
 zapi:
   base-url: https://api.z-api.io
-  instance-id: 3EB92EF66A5AA1272EF64A1F6B0D2773
-  token: 927A39BB005A8132AE9F6DD9
-  client-token: F65e23dc2bb014369926b6c6d764ebcc5S
+  instance-id: ${ZAPI_INSTANCE_ID}
+  token: ${ZAPI_TOKEN}
+  client-token: ${ZAPI_CLIENT_TOKEN}
+
+n8n:
+  webhook-url: https://seu-n8n.com/webhook/flow-refine
+  secret: seu-secret-aqui

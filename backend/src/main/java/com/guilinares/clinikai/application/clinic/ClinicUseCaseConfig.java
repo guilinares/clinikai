@@ -55,4 +55,24 @@ public class ClinicUseCaseConfig {
     public SetEnabledClinicKbUseCase setEnabledClinicKbUseCase(ClinicKbRepositoryPort clinicKbRepositoryPort) {
         return new SetEnabledClinicKbUseCase(clinicKbRepositoryPort);
     }
+
+    @Bean
+    public SetClinicFlowUseCase setClinicFlowUseCase(ClinicRepositoryPort port, com.guilinares.clinikai.application.clinic.ports.FlowRefinementPort flowRefinementPort) {
+        return new SetClinicFlowUseCase(port, flowRefinementPort);
+    }
+
+    @Bean
+    public GetClinicFlowUseCase getClinicFlowUseCase(ClinicRepositoryPort port) {
+        return new GetClinicFlowUseCase(port);
+    }
+
+    @Bean
+    public ReceiveRefinedFlowUseCase receiveRefinedFlowUseCase(ClinicRepositoryPort port) {
+        return new ReceiveRefinedFlowUseCase(port);
+    }
+
+    @Bean
+    public GetClinicFlowPromptUseCase getClinicFlowPromptUseCase(ClinicRepositoryPort port) {
+        return new GetClinicFlowPromptUseCase(port);
+    }
 }

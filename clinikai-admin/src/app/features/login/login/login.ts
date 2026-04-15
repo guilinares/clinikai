@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -10,14 +10,22 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class Login implements OnInit {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   email = '';
   password = '';
   loading = false;
   error: string | null = null;
+  warning: string | null = null;
+
+  ngOnInit() {
+    if (this.route.snapshot.queryParamMap.get('sessionExpired')) {
+      this.warning = 'Sua sessão expirou. Faça login novamente.';
+    }
+  }
 
   submit() {
     this.error = null;

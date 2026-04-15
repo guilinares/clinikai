@@ -18,11 +18,11 @@ const typeLabel = (t: NodeType) => {
 const iconBg = (t: NodeType) => {
   switch (t) {
     case "start":
-      return "rgba(98,159,173,.18)";
+      return "rgba(55, 170, 44, 0.38)";
     case "decision":
-      return "rgba(41,99,116,.14)";
+      return "rgba(72, 179, 211, 0.45)";
     case "end":
-      return "rgba(12,44,85,.10)";
+      return "rgba(161, 26, 26, 0.27)";
     default:
       return "rgba(237,237,206,.65)";
   }
@@ -31,9 +31,11 @@ const iconBg = (t: NodeType) => {
 const dotBg = (t: NodeType) => {
   switch (t) {
     case "start":
-      return "#296374";
+      return "#296374"; // teal
     case "decision":
-      return "#296374";
+      return "#629FAD"; // sky (diferencia)
+    case "end":
+      return "#0C2C55"; // navy
     default:
       return "#0C2C55";
   }
@@ -62,12 +64,10 @@ export default function StepNode(props: NodeProps) {
         <div className="nodeMeta">
           <div className="node-header">
             <span className={`node-badge t-${data.type}`}>
-              {data.type.toUpperCase()}
+                {typeLabel(data.type).toUpperCase()}
             </span>
-            {/* seu título existente aqui */}
           </div>
           <div className="nodeTitle">{data.title || "Sem título"}</div>
-          <div className="nodeType">{typeLabel(data.type)}</div>
         </div>
       </div>
 

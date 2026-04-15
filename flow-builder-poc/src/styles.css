@@ -1,4 +1,16 @@
 :root{
+/* reforça sua paleta */
+  --flow-start: rgba(41,99,116,.95);   /* teal */
+  --flow-step: rgba(12,44,85,.90);     /* navy */
+  --flow-decision: rgba(98,159,173,.95); /* sky */
+  --flow-end: rgba(12,44,85,.95);      /* navy forte (fim) */
+
+  /* tints suaves */
+  --flow-start-bg: rgba(41,99,116,.10);
+  --flow-step-bg: rgba(12,44,85,.06);
+  --flow-decision-bg: rgba(98,159,173,.12);
+  --flow-end-bg: rgba(12,44,85,.10);
+
   --c-navy: #0C2C55;
   --c-teal: #296374;
   --c-sky:  #629FAD;
@@ -136,22 +148,27 @@ body{
 /* Base continua a mesma, só vamos "tintar" por tipo */
 
 .node.t-start{
-  border-color: rgba(41,99,116,.55);              /* teal */
+  border-color: rgba(41,99,116,.28);
   box-shadow: 0 18px 40px rgba(41,99,116,.10);
 }
 
 .node.t-step{
-  border-color: rgba(12,44,85,.18);              /* navy (padrão) */
+  border-color: rgba(12,44,85,.18);
 }
 
 .node.t-decision{
-  border-color: rgba(98,159,173,.70);            /* sky */
+  border-color: rgba(98,159,173,.30);
   box-shadow: 0 18px 40px rgba(98,159,173,.10);
 }
 
 .node.t-end{
-  border-color: rgba(12,44,85,.30);              /* navy mais forte */
+  border-color: rgba(12,44,85,.26);
   box-shadow: 0 18px 40px rgba(12,44,85,.10);
+}
+
+.react-flow__node.selected .node{
+  border-color: rgba(98,159,173,.90);
+  box-shadow: 0 22px 55px rgba(98,159,173,.18);
 }
 
 .node-header{
@@ -161,35 +178,44 @@ body{
 }
 
 .node-badge{
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 10px;
+  border-radius: 999px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: .06em;
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(12,44,85,.12);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+
+  border: 1px solid rgba(12,44,85,.14);
+  background: rgba(237,237,206,.60);
   color: rgba(12,44,85,.85);
-  background: rgba(237,237,206,.65);
 }
 
+
 .node-badge.t-start{
-  border-color: rgba(41,99,116,.35);
-  background: rgba(41,99,116,.12);
+  border-color: rgba(41,99,116,.28);
+  background: var(--flow-start-bg);
+  color: rgba(41,99,116,.95);
+}
+
+.node-badge.t-step{
+  border-color: rgba(12,44,85,.16);
+  background: var(--flow-step-bg);
+  color: rgba(12,44,85,.90);
 }
 
 .node-badge.t-decision{
-  border-color: rgba(98,159,173,.45);
-  background: rgba(98,159,173,.14);
+  border-color: rgba(98,159,173,.28);
+  background: var(--flow-decision-bg);
+  color: rgba(41,99,116,.95); /* teal pra ficar “clínico” */
 }
 
 .node-badge.t-end{
-  border-color: rgba(12,44,85,.24);
-  background: rgba(12,44,85,.10);
-}
-
-/* Se o node selecionado já tem destaque, mantenha acima de tudo */
-.react-flow__node.selected .node,
-.react-flow__node:has(.node):focus .node{
-  /* se você já tem algo, ignore este bloco */
+  border-color: rgba(12,44,85,.22);
+  background: var(--flow-end-bg);
+  color: rgba(12,44,85,.95);
 }
 
 .nodeTop{
@@ -216,6 +242,23 @@ body{
   opacity: .85;
 }
 
+/* ===== Ícone: só um detalhe a mais (sem mudar layout) ===== */
+/* Se quiser, dá pra colocar um ring no nodeIcon por tipo */
+.node.t-start .nodeIcon{ outline: 1px solid rgba(41,99,116,.22); }
+.node.t-decision .nodeIcon{ outline: 1px solid rgba(98,159,173,.22); }
+.node.t-end .nodeIcon{ outline: 1px solid rgba(12,44,85,.18); }
+
+/* ===== Handles: herdar cor do tipo (bem leve) ===== */
+.node.t-start .handle{ border-color: rgba(41,99,116,.35); }
+.node.t-decision .handle{ border-color: rgba(98,159,173,.35); }
+.node.t-end .handle{ border-color: rgba(12,44,85,.30); }
+
+/* ===== Invalid continua mandando (não perde sua validação) ===== */
+.react-flow__node.step.invalid .node{
+  border-color: rgba(153,27,27,.55) !important;
+  box-shadow: 0 18px 40px rgba(153,27,27,.12) !important;
+}
+
 .nodeMeta{ flex: 1; min-width: 0; }
 .nodeTitle{
   font-weight: 850;
@@ -224,6 +267,7 @@ body{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 5px;
 }
 .nodeType{
   margin-top: 2px;
@@ -376,4 +420,17 @@ body{
 .status-badge.invalid{
   background: rgba(153,27,27,.15);
   color: #7f1d1d;
+}
+
+.edgeLabel{
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(12,44,85,.18);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(12,44,85,.90);
+  box-shadow: 0 6px 18px rgba(12,44,85,.12);
+  pointer-events: all;
+  width: max-content;
 }

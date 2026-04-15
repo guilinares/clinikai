@@ -50,6 +50,16 @@
   border-radius: 12px;
 }
 
+.warning{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(180,120,0,.08);
+  border: 1px solid rgba(180,120,0,.25);
+  color: rgba(120,80,0,.90);
+  font-size: 13px;
+}
+
 .error{
   margin-top: 12px;
   padding: 10px 12px;

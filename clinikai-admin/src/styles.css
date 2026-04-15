@@ -70,3 +70,11 @@ input, button, textarea, select {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
+
+/* FullCalendar: hover nos dias para indicar que é clicável */
+.fc-daygrid-day:hover .fc-daygrid-day-frame,
+.fc-timegrid-col:hover .fc-timegrid-col-bg {
+  background: rgba(12, 44, 85, 0.05);
+  cursor: pointer;
+  transition: background 0.15s;
+}

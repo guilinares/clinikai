@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/conversation/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/integrations/google/callback").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/webhooks/asaas").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/webhooks/n8n/**").permitAll()
+                        .requestMatchers("/api/calendar/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()

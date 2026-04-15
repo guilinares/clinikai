@@ -40,10 +40,77 @@ import { loadFlow, saveFlow } from "./infra/flow.storage";
 
 import { useUndoRedo } from "./editor/useUndoRedo";
 import { useKeyboardShortcuts } from "./editor/useKeyboardShortcuts";
+import CustomFlowEdge from "./edges/FlowEdge";
+
+const SESSION_KEY = "clinikai.admin.session";
+
+function getSession(): { clinicId: string; accessToken: string } | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed?.clinicId && parsed?.accessToken) return parsed;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Converte o JSON salvo no backend para FlowSnapshot válido.
+// Suporta dois formatos:
+//   - Novo: { nodes (com position + data), edges } — salvo a partir do snapshot ReactFlow
+//   - Antigo: FlowSpecV1 { version, nodes (com title/description direto, sem position), edges }
+function restoreSnapshot(
+  raw: Record<string, unknown>,
+  layout: (nodes: FlowNode[], edges: FlowEdge[]) => FlowNode[],
+): FlowSnapshot {
+  const rawNodes = (raw.nodes ?? []) as Record<string, unknown>[];
+  const rawEdges = (raw.edges ?? []) as Record<string, unknown>[];
+
+  // Formato novo: nodes têm o campo `data`
+  const isNewFormat = rawNodes[0]?.data !== undefined;
+
+  if (isNewFormat) {
+    const nodes = rawNodes.map((n) => ({
+      ...n,
+      type: (n.type as string) || "step",
+      position: (n.position as { x: number; y: number }) ?? { x: 0, y: 0 },
+    })) as FlowNode[];
+
+    const edges = rawEdges.map((e) => ({
+      ...e,
+      type: (e.type as string) || "flow",
+    })) as FlowEdge[];
+
+    return { nodes, edges };
+  }
+
+  // Formato antigo (FlowSpecV1): converte para estrutura ReactFlow e aplica layout
+  const nodes: FlowNode[] = rawNodes.map((n) => ({
+    id: n.id as string,
+    type: "step",
+    position: { x: 0, y: 0 },
+    data: {
+      type: n.type as NodeType,
+      title: (n.title as string) ?? "",
+      description: (n.description as string) ?? "",
+    },
+  }));
+
+  const edges: FlowEdge[] = rawEdges.map((e) => ({
+    id: e.id as string,
+    source: e.source as string,
+    target: e.target as string,
+    type: "flow",
+    label: e.label as string | undefined,
+  }));
+
+  return { nodes: layout(nodes, edges), edges };
+}
 
 export default function App() {
-  // ---- tenant (POC) ----
-  const clinicId = "clinic_123"; // depois vem do login/tenant
+  // ---- tenant ----
+  const clinicId = getSession()?.clinicId ?? "local";
 
   // ---- ReactFlow setup ----
   const nodeTypes: NodeTypes = useMemo(() => ({ step: StepNode }), []);
@@ -55,14 +122,17 @@ export default function App() {
   // ---- selection ----
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selectedNode: FlowNode | null = useMemo(
-    () => (selectedId ? (nodes.find((n) => n.id === selectedId) as FlowNode) : null) ?? null,
-    [nodes, selectedId]
+    () =>
+      (selectedId
+        ? (nodes.find((n) => n.id === selectedId) as FlowNode)
+        : null) ?? null,
+    [nodes, selectedId],
   );
 
   // ---- snapshot + undo/redo ----
   const snapshot: FlowSnapshot = useMemo(
     () => ({ nodes: nodes as FlowNode[], edges: edges as FlowEdge[] }),
-    [nodes, edges]
+    [nodes, edges],
   );
 
   const applySnapshot = useCallback(
@@ -70,7 +140,7 @@ export default function App() {
       setNodes(s.nodes);
       setEdges(s.edges);
     },
-    [setNodes, setEdges]
+    [setNodes, setEdges],
   );
 
   const { history, future, push, undo, redo } = useUndoRedo(50);
@@ -78,19 +148,40 @@ export default function App() {
   // ---- validation ----
   const issues = useMemo(
     () => validateGraph(nodes as FlowNode[], edges as FlowEdge[]),
-    [nodes, edges]
+    [nodes, edges],
   );
   const invalidNodeIds = useMemo(
     () => new Set(issues.map((i) => i.nodeId)),
-    [issues]
+    [issues],
   );
 
-  // ---- initial load (seed) ----
+  // ---- initial load: backend first, localStorage fallback ----
   useEffect(() => {
-    const initial = loadFlow(clinicId);
-    applySnapshot(initial);
+    const session = getSession();
+
+    if (!session) {
+      applySnapshot(loadFlow(clinicId));
+      return;
+    }
+
+    fetch(`/api/clinics/${session.clinicId}/flow`, {
+      headers: { Authorization: `Bearer ${session.accessToken}` },
+    })
+      .then((res) => {
+        if (res.status === 204) return null;
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((raw) => {
+        if (raw?.nodes?.length) {
+          applySnapshot(restoreSnapshot(raw, layoutDagre));
+        } else {
+          applySnapshot(loadFlow(session.clinicId));
+        }
+      })
+      .catch(() => applySnapshot(loadFlow(session.clinicId)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clinicId]);
+  }, []);
 
   // ---- persist ----
   useEffect(() => {
@@ -105,7 +196,7 @@ export default function App() {
 
     const newNodes = (nodes as FlowNode[]).filter((n) => n.id !== selectedId);
     const newEdges = (edges as FlowEdge[]).filter(
-      (e) => e.source !== selectedId && e.target !== selectedId
+      (e) => e.source !== selectedId && e.target !== selectedId,
     );
 
     push(snapshot); // salva estado anterior
@@ -151,13 +242,10 @@ export default function App() {
       push(snapshot);
 
       setEdges((eds) =>
-        addEdge(
-          { ...conn, id: uid("e"), type: "default", label },
-          eds
-        )
+        addEdge({ ...conn, id: uid("e"), type: "flow", label }, eds),
       );
     },
-    [nodes, edges, push, snapshot, setEdges]
+    [nodes, edges, push, snapshot, setEdges],
   );
 
   // ---- add node ----
@@ -171,7 +259,7 @@ export default function App() {
         {
           id,
           type: "step",
-          position: { x: 420, y: 280 + (nodes.length * 10) },
+          position: { x: 420, y: 280 + nodes.length * 10 },
           data,
         },
       ];
@@ -182,7 +270,7 @@ export default function App() {
       // opcional: auto-selecionar novo node
       setSelectedId(id);
     },
-    [nodes, push, snapshot, setNodes]
+    [nodes, push, snapshot, setNodes],
   );
 
   // ---- edit selected ----
@@ -197,11 +285,11 @@ export default function App() {
         (nds as FlowNode[]).map((n) =>
           n.id === selectedId
             ? { ...n, data: { ...(n.data as NodeData), ...patch } }
-            : n
-        )
+            : n,
+        ),
       );
     },
-    [selectedId, setNodes]
+    [selectedId, setNodes],
   );
 
   // ---- export ----
@@ -220,6 +308,47 @@ export default function App() {
     push(snapshot);
     setNodes((nds) => layoutDagre(nds as FlowNode[], edges as FlowEdge[]));
   }, [push, snapshot, setNodes, edges]);
+
+  const edgeTypes = useMemo(
+    () => ({
+      flow: CustomFlowEdge,
+    }),
+    [],
+  );
+
+  const publishFlow = useCallback(async () => {
+    if (issues.length > 0) {
+      alert("O fluxo possui erros e não pode ser publicado.");
+      return;
+    }
+
+    const session = getSession();
+    if (!session) {
+      alert("Sessão não encontrada. Faça login novamente.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/clinics/${session.clinicId}/flow/publish`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify({ flow: { nodes, edges } }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      alert("Fluxo publicado com sucesso 🚀");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao publicar fluxo.");
+    }
+  }, [nodes, edges, issues]);
 
   return (
     <div className="shell">
@@ -240,20 +369,31 @@ export default function App() {
           <button
             className="btn btn-primary"
             onClick={() => addNodeOfType("start")}
-            disabled={(nodes as FlowNode[]).some((n) => (n.data as NodeData)?.type === "start")}
+            disabled={(nodes as FlowNode[]).some(
+              (n) => (n.data as NodeData)?.type === "start",
+            )}
           >
             + Início
           </button>
 
-          <button className="btn btn-secondary" onClick={() => addNodeOfType("step")}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => addNodeOfType("step")}
+          >
             + Etapa
           </button>
 
-          <button className="btn btn-secondary" onClick={() => addNodeOfType("decision")}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => addNodeOfType("decision")}
+          >
             + Decisão
           </button>
 
-          <button className="btn btn-secondary" onClick={() => addNodeOfType("end")}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => addNodeOfType("end")}
+          >
             + Encerrar
           </button>
         </div>
@@ -270,19 +410,35 @@ export default function App() {
             Organizar
           </button>
 
-          <button className="btn btn-secondary" onClick={() => undo(snapshot, applySnapshot)} disabled={history.length === 0}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => undo(snapshot, applySnapshot)}
+            disabled={history.length === 0}
+          >
             Desfazer
           </button>
 
-          <button className="btn btn-secondary" onClick={() => redo(snapshot, applySnapshot)} disabled={future.length === 0}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => redo(snapshot, applySnapshot)}
+            disabled={future.length === 0}
+          >
             Refazer
           </button>
 
-          <button className="btn btn-primary" disabled={issues.length > 0}>
+          <button
+            className="btn btn-primary"
+            disabled={issues.length > 0}
+            onClick={publishFlow}
+          >
             Publicar
           </button>
 
-          <button className="btn btn-danger" onClick={deleteSelected} disabled={!selectedId}>
+          <button
+            className="btn btn-danger"
+            onClick={deleteSelected}
+            disabled={!selectedId}
+          >
             Excluir selecionado
           </button>
         </div>
@@ -294,8 +450,10 @@ export default function App() {
               <b>Validação:</b> {issues.length} problema(s).
               {issues.slice(0, 8).map((i, idx) => {
                 const title = (
-                  ((nodes as FlowNode[]).find((n) => n.id === i.nodeId)?.data as NodeData)?.title ??
-                  i.nodeId
+                  (
+                    (nodes as FlowNode[]).find((n) => n.id === i.nodeId)
+                      ?.data as NodeData
+                  )?.title ?? i.nodeId
                 ).toString();
                 return (
                   <div
@@ -303,9 +461,14 @@ export default function App() {
                     className="item"
                     onClick={() => {
                       setSelectedId(i.nodeId);
-                      const n = (nodes as FlowNode[]).find((n) => n.id === i.nodeId);
+                      const n = (nodes as FlowNode[]).find(
+                        (n) => n.id === i.nodeId,
+                      );
                       if (rf && n) {
-                        rf.setCenter(n.position.x, n.position.y, { zoom: 1.1, duration: 250 });
+                        rf.setCenter(n.position.x, n.position.y, {
+                          zoom: 1.1,
+                          duration: 250,
+                        });
                       }
                     }}
                   >
@@ -313,7 +476,9 @@ export default function App() {
                   </div>
                 );
               })}
-              {issues.length > 8 && <div className="item">…e mais {issues.length - 8}</div>}
+              {issues.length > 8 && (
+                <div className="item">…e mais {issues.length - 8}</div>
+              )}
             </div>
           </>
         )}
@@ -332,6 +497,8 @@ export default function App() {
               className: invalidNodeIds.has(n.id) ? "invalid" : "",
             }))}
             edges={edges}
+            edgeTypes={edgeTypes}
+            defaultEdgeOptions={{ type: "flow" }}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -365,7 +532,9 @@ export default function App() {
         <h3 className="h1">Editor</h3>
 
         {!selectedNode ? (
-          <p className="p">Clique em um bloco para editar título e descrição.</p>
+          <p className="p">
+            Clique em um bloco para editar título e descrição.
+          </p>
         ) : (
           <>
             <div className="tag" style={{ marginBottom: 12 }}>
@@ -396,7 +565,10 @@ export default function App() {
             <div style={{ height: 12 }} />
 
             <div className="row">
-              <button className="btn btn-secondary" onClick={() => setSelectedId(null)}>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setSelectedId(null)}
+              >
                 Fechar
               </button>
             </div>

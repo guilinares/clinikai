@@ -19,11 +19,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err) => {
       if (err?.status === 401) {
         session.clear();
-        router.navigateByUrl('/admin/login');
-      }
-      if (err.status === 403 && err?.error?.code === 'BILLING_INACTIVE') {
-        alert('Seu plano de assinatura está inativo. Por favor, atualize suas informações de pagamento para continuar usando o serviço.');
-        router.navigateByUrl('/admin/settings/billing');
+        router.navigate(['/admin/login'], { queryParams: { sessionExpired: true } });
+      } else if (err?.status === 403) {
+        if (err?.error?.code === 'BILLING_INACTIVE') {
+          alert('Seu plano de assinatura está inativo. Por favor, atualize suas informações de pagamento para continuar usando o serviço.');
+          router.navigateByUrl('/admin/settings/billing');
+        } else {
+          session.clear();
+          router.navigate(['/admin/login'], { queryParams: { sessionExpired: true } });
+        }
       }
       return throwError(() => err);
     })

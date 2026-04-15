@@ -12,4 +12,6 @@ public interface ClinicRepositoryPort {
     Optional<ClinicEntity> findById(UUID clinicId);
     Optional<ClinicEntity> findByPhone(String phone);
     ClinicEntity getReference(UUID clinicId);
+    void updateFlow(UUID clinicId, String flowJson);
+    void updateFlowPrompt(UUID clinicId, String flowPrompt);
 }

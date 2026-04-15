@@ -1,0 +1,42 @@
+# ─── Segredos — NUNCA commitar ───────────────────────────────────────────────
+.env.prod
+*.pem
+*.key
+
+# ─── Terraform ────────────────────────────────────────────────────────────────
+infra/terraform/.terraform/
+infra/terraform/.terraform.lock.hcl
+infra/terraform/tfplan
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+infra/terraform/crash.log
+infra/terraform/override.tf
+infra/terraform/override.tf.json
+
+# ─── Java / Spring Boot ───────────────────────────────────────────────────────
+backend/src/main/resources/application-local.yml
+backend/build/
+backend/.gradle/
+backend/out/
+*.class
+*.jar
+*.war
+*.ear
+HELP.md
+.DS_Store
+
+# ─── Angular ──────────────────────────────────────────────────────────────────
+clinikai-admin/node_modules/
+clinikai-admin/dist/
+clinikai-admin/.angular/
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# ─── Sistema ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

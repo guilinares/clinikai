@@ -1,0 +1,142 @@
+<div class="header">
+  <div>
+    <h2 class="h2">Agenda</h2>
+    <div class="sub">Gerencie os agendamentos da clínica. Clique num dia para criar, arraste para reagendar.</div>
+  </div>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+}
+
+@if (loading()) {
+  <div class="loading-bar"></div>
+}
+
+<div class="card calendar-card">
+  <full-calendar #calendarEl [options]="calendarOptions" />
+</div>
+
+<!-- Modal: detalhe / edição do evento -->
+@if (selectedEvent(); as ev) {
+  <div class="modal-backdrop" (click)="closeDetail()">
+    <div class="modal card" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-title">{{ editMode() ? 'Editar agendamento' : ev.title }}</div>
+        <button class="modal-close" (click)="closeDetail()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        @if (!editMode()) {
+          <!-- Modo visualização -->
+          <div class="detail-row">
+            <span class="detail-label">Início</span>
+            <span class="detail-value">{{ formatDate(ev.start) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Fim</span>
+            <span class="detail-value">{{ formatDate(ev.end) }}</span>
+          </div>
+          @if (ev.description) {
+            <div class="detail-row">
+              <span class="detail-label">Descrição</span>
+              <span class="detail-value">{{ ev.description }}</span>
+            </div>
+          }
+          <div class="modal-actions">
+            <button class="btn btn-danger" [disabled]="canceling()" (click)="cancelEvent()">
+              {{ canceling() ? 'Cancelando...' : 'Cancelar agendamento' }}
+            </button>
+            <button class="btn btn-secondary" (click)="openEdit()">Editar</button>
+          </div>
+        } @else {
+          <!-- Modo edição -->
+          <div class="form-field">
+            <label class="label">Título *</label>
+            <input class="input" [(ngModel)]="editTitle" />
+          </div>
+
+          <div class="form-field">
+            <label class="label">Descrição</label>
+            <textarea class="input textarea" [(ngModel)]="editDescription" rows="3"></textarea>
+          </div>
+
+          <div class="form-field">
+            <label class="label">Data *</label>
+            <input class="input" type="date" [(ngModel)]="editDate" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="label">Hora início *</label>
+              <input class="input" type="time" [(ngModel)]="editStartTime" />
+            </div>
+            <div class="form-field">
+              <label class="label">Hora fim *</label>
+              <input class="input" type="time" [(ngModel)]="editEndTime" />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="editMode.set(false)">Voltar</button>
+            <button class="btn btn-primary"
+                    [disabled]="saving() || !editTitle.trim()"
+                    (click)="saveEdit()">
+              {{ saving() ? 'Salvando...' : 'Salvar' }}
+            </button>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal: criar evento -->
+@if (showCreateForm()) {
+  <div class="modal-backdrop" (click)="closeCreateForm()">
+    <div class="modal card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Novo agendamento</div>
+        <button class="modal-close" (click)="closeCreateForm()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="label">Título *</label>
+          <input class="input" [(ngModel)]="newTitle" placeholder="Ex: Consulta Dr. Silva" />
+        </div>
+
+        <div class="form-field">
+          <label class="label">Descrição</label>
+          <textarea class="input textarea" [(ngModel)]="newDescription" placeholder="Informações adicionais..." rows="3"></textarea>
+        </div>
+
+        <div class="form-field">
+          <label class="label">Data *</label>
+          <input class="input" type="date" [(ngModel)]="newDate" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="label">Hora início *</label>
+            <input class="input" type="time" [(ngModel)]="newStartTime" />
+          </div>
+          <div class="form-field">
+            <label class="label">Hora fim *</label>
+            <input class="input" type="time" [(ngModel)]="newEndTime" />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="closeCreateForm()">Cancelar</button>
+          <button class="btn btn-primary" [disabled]="saving() || !newTitle.trim() || !newDate || !newStartTime || !newEndTime" (click)="createEvent()">
+            {{ saving() ? 'Salvando...' : 'Criar agendamento' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

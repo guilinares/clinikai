@@ -42,6 +42,12 @@ public class ClinicEntity {
     @Column(name = "ai_config")
     private String aiConfig;
 
+    @Column(name = "flow_config", columnDefinition = "text")
+    private String flowConfig;
+
+    @Column(name = "flow_prompt", columnDefinition = "text")
+    private String flowPrompt;
+
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
