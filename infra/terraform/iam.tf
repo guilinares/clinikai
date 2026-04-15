@@ -60,16 +60,18 @@ resource "aws_iam_user_policy" "github_actions" {
     Version = "2012-10-17"
     Statement = [
       {
-        # Necessário para o Terraform no pipeline
         Effect = "Allow"
         Action = [
-          "ec2:Describe*",
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket",
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
+          # EC2 + VPC
+          "ec2:*",
+          # S3 (estado do Terraform + bucket de backups)
+          "s3:*",
+          # DynamoDB (lock do Terraform)
+          "dynamodb:*",
+          # IAM (para o Terraform gerenciar roles e users)
+          "iam:*",
+          # CloudWatch (logs)
+          "logs:*"
         ]
         Resource = "*"
       }
