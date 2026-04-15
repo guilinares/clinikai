@@ -114,63 +114,14 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # ─── 3. Build do Angular ───────────────────────────────────────────────────
-  build-frontend:
-    name: Build Angular
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: clinikai-admin/package-lock.json
-
-      - name: Install dependencies
-        working-directory: clinikai-admin
-        run: npm ci
-
-      - name: Build
-        working-directory: clinikai-admin
-        run: npm run build -- --configuration production
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: clinikai-admin/dist/
-          retention-days: 1
-
-  # ─── 4. Deploy na EC2 ─────────────────────────────────────────────────────
+  # ─── 3. Deploy na EC2 ────────────────────────────────────────────────────
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    needs: [build-image, build-frontend]
+    needs: [build-image]
     environment: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download frontend dist
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: clinikai-admin/dist/
-
-      - name: Copy files to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "docker-compose.prod.yml,nginx/,clinikai-admin/dist/,scripts/"
-          target: /opt/clinikai
-
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -180,7 +131,21 @@ jobs:
           script: |
             cd /opt/clinikai
 
-            # Faz login no GHCR com o token do GitHub Actions
+            # Atualiza o código do repositório
+            git pull origin main
+
+            # Garante Node.js instalado (idempotente)
+            if ! command -v node &> /dev/null; then
+              sudo apt-get install -y nodejs npm
+            fi
+
+            # Build do Angular
+            cd clinikai-admin
+            npm ci --silent
+            npm run build -- --configuration production
+            cd ..
+
+            # Faz login no GHCR
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
             # Exporta variáveis de ambiente
@@ -188,7 +153,7 @@ jobs:
             export GITHUB_REPOSITORY=${{ github.repository }}
             export IMAGE_TAG=$(echo "${{ github.sha }}" | cut -c1-7)
 
-            # Pull da nova imagem e restart apenas do backend
+            # Pull da nova imagem e restart
             docker compose -f docker-compose.prod.yml pull backend
             docker compose -f docker-compose.prod.yml up -d --no-deps backend nginx
 
@@ -199,12 +164,11 @@ jobs:
             # Health check
             HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || echo "000")
             if [ "$HTTP_STATUS" != "200" ]; then
-              echo "❌ Health check falhou (status: $HTTP_STATUS). Fazendo rollback..."
-              docker compose -f docker-compose.prod.yml rollback backend
+              echo "Deploy falhou no health check (status: $HTTP_STATUS)"
               exit 1
             fi
 
-            echo "✅ Deploy concluído! Imagem: $IMAGE_TAG"
+            echo "Deploy concluido! Imagem: $IMAGE_TAG"
 
             # Limpa imagens antigas
             docker image prune -f
