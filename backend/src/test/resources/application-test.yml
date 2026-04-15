@@ -1,0 +1,22 @@
+# Configurações dummy para testes de CI — nunca usar em produção
+google:
+  oauth:
+    client-id: test-client-id
+    client-secret: test-client-secret
+
+asaas:
+  api-key: test-asaas-key
+
+security:
+  crypto:
+    master-key-base64: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
+app:
+  security:
+    jwt:
+      secret: test-jwt-secret-for-ci-only-must-be-long-enough
+
+zapi:
+  instance-id: test-instance-id
+  token: test-token
+  client-token: test-client-token

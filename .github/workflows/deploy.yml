@@ -52,8 +52,8 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/clinikai
           SPRING_DATASOURCE_USERNAME: clinikai
           SPRING_DATASOURCE_PASSWORD: clinikai
+          SPRING_PROFILES_ACTIVE: test
           JWT_SECRET: test-secret-for-ci-only
-          CRYPTO_MASTER_KEY_BASE64: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
         run: ./gradlew test --no-daemon
 
       - name: Build JAR
