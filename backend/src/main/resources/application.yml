@@ -3,17 +3,18 @@ server:
 
 google:
   oauth:
-    client-id: ${GOOGLE_CLIENT_ID}
-    client-secret: ${GOOGLE_CLIENT_SECRET}
+    client-id: ${GOOGLE_CLIENT_ID:test-client-id}
+    client-secret: ${GOOGLE_CLIENT_SECRET:test-client-secret}
     redirect-uri: http://localhost:8080/api/integrations/google/callback
 
 asaas:
   base-url: https://api.asaas.com/v3
-  api-key: ${ASAAS_API_KEY}
+  api-key: ${ASAAS_API_KEY:test-asaas-key}
 
 security:
   crypto:
-    master-key-base64: ${CRYPTO_MASTER_KEY_BASE64}
+    master-key-base64: ${CRYPTO_MASTER_KEY_BASE64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=}
+
 spring:
   application:
     name: clinikai
@@ -50,18 +51,16 @@ app:
       secret: "CHANGE_ME_DEV_SECRET"
   security:
     jwt:
-      secret: ${JWT_SECRET}
+      secret: ${JWT_SECRET:test-jwt-secret-for-dev-and-ci-only-change-in-prod}
       access-token-minutes: 60
       issuer: clinikai
 
 zapi:
   base-url: https://api.z-api.io
-  instance-id: ${ZAPI_INSTANCE_ID}
-  token: ${ZAPI_TOKEN}
-  client-token: ${ZAPI_CLIENT_TOKEN}
+  instance-id: ${ZAPI_INSTANCE_ID:test-instance-id}
+  token: ${ZAPI_TOKEN:test-token}
+  client-token: ${ZAPI_CLIENT_TOKEN:test-client-token}
 
 n8n:
-  webhook-url: https://seu-n8n.com/webhook/flow-refine
-  secret: seu-secret-aqui
-  
-  
+  webhook-url: ${N8N_WEBHOOK_URL:https://test.example.com/webhook}
+  secret: ${N8N_SECRET:test-secret}
