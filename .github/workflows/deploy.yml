@@ -129,66 +129,61 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Garante PATH completo para sessão SSH não-interativa
-            export PATH=$PATH:/usr/bin:/usr/local/bin:/snap/bin
+            set -e
+
+            # Caminhos absolutos para evitar problemas de PATH em sessão não-interativa
+            DOCKER=/usr/bin/docker
+            GIT=/usr/bin/git
+            APP_DIR=/home/ubuntu/clinikai
 
             # Clona o repo se não existir, senão atualiza
-            if [ ! -d "/opt/clinikai/.git" ]; then
-              git clone https://github.com/${{ github.repository }}.git /opt/clinikai
+            if [ ! -d "$APP_DIR/.git" ]; then
+              $GIT clone https://github.com/${{ github.repository }}.git $APP_DIR
             fi
 
-            cd /opt/clinikai
-            git pull origin main
+            cd $APP_DIR
+            $GIT pull origin main
 
-            # Garante Node.js instalado (idempotente)
-            if ! command -v node &> /dev/null; then
+            # Garante Node.js instalado
+            if ! /usr/bin/node --version &>/dev/null; then
               sudo apt-get install -y nodejs npm
             fi
 
             # Build do Angular
-            cd clinikai-admin
-            npm ci --silent
-            npm run build -- --configuration production
-            cd ..
+            cd $APP_DIR/clinikai-admin
+            /usr/bin/npm ci --silent
+            /usr/bin/npm run build -- --configuration production
+
+            cd $APP_DIR
 
             # Faz login no GHCR
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "${{ secrets.GHCR_TOKEN }}" | $DOCKER login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Define tag da imagem
-            export IMAGE_TAG=$(echo "${{ github.sha }}" | cut -c1-7)
-            export GITHUB_REPOSITORY=${{ github.repository }}
+            # Atualiza IMAGE_TAG e GITHUB_REPOSITORY no .env.prod
+            IMAGE_TAG=$(echo "${{ github.sha }}" | cut -c1-7)
+            sed -i '/^IMAGE_TAG=/d' $APP_DIR/.env.prod
+            sed -i '/^GITHUB_REPOSITORY=/d' $APP_DIR/.env.prod
+            echo "IMAGE_TAG=${IMAGE_TAG}" >> $APP_DIR/.env.prod
+            echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $APP_DIR/.env.prod
 
-            # Adiciona/atualiza IMAGE_TAG e GITHUB_REPOSITORY no .env.prod
-            sed -i '/^IMAGE_TAG=/d' .env.prod
-            sed -i '/^GITHUB_REPOSITORY=/d' .env.prod
-            echo "IMAGE_TAG=${IMAGE_TAG}" >> .env.prod
-            echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}" >> .env.prod
+            # Pull e restart
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml pull backend
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d --no-deps backend nginx
 
-            # Pull da nova imagem e restart (--env-file garante que todas as vars são carregadas)
-            docker compose --env-file .env.prod -f docker-compose.prod.yml pull backend
-            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --no-deps backend nginx
+            # Logs em tempo real por 30s
+            echo "=== Logs do backend ==="
+            timeout 30 $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml logs -f backend || true
 
-            # Aguarda o backend subir e mostra logs em tempo real
-            echo "=== Aguardando backend subir (logs em tempo real) ==="
-            timeout 60 docker compose --env-file .env.prod -f docker-compose.prod.yml logs -f backend &
-            LOGS_PID=$!
-            sleep 30
-            kill $LOGS_PID 2>/dev/null || true
-
-            echo "=== Verificando status dos containers ==="
-            docker compose --env-file .env.prod -f docker-compose.prod.yml ps
+            echo "=== Status dos containers ==="
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml ps
 
             # Health check
             HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || echo "000")
-            echo "Health check status: $HTTP_STATUS"
+            echo "Health check: $HTTP_STATUS"
             if [ "$HTTP_STATUS" != "200" ]; then
-              echo "=== Logs finais do backend ==="
-              docker compose --env-file .env.prod -f docker-compose.prod.yml logs --tail=50 backend
-              echo "Deploy falhou no health check"
+              $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml logs --tail=50 backend
               exit 1
             fi
 
             echo "Deploy concluido! Imagem: $IMAGE_TAG"
-
-            # Limpa imagens antigas
-            docker image prune -f
+            $DOCKER image prune -f
