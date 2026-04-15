@@ -129,9 +129,15 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /opt/clinikai
+            # Garante PATH completo para sessão SSH não-interativa
+            export PATH=$PATH:/usr/bin:/usr/local/bin:/snap/bin
 
-            # Atualiza o código do repositório
+            # Clona o repo se não existir, senão atualiza
+            if [ ! -d "/opt/clinikai/.git" ]; then
+              git clone https://github.com/${{ github.repository }}.git /opt/clinikai
+            fi
+
+            cd /opt/clinikai
             git pull origin main
 
             # Garante Node.js instalado (idempotente)
