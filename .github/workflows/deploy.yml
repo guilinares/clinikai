@@ -134,8 +134,12 @@ jobs:
             # Caminhos para sessão SSH não-interativa
             GIT=/usr/bin/git
             APP_DIR=/home/ubuntu/clinikai
-            DOCKER=$(which docker || echo /usr/bin/docker)
-            export PATH=$PATH:/usr/local/bin:/snap/bin
+            # Instala Docker se não estiver presente
+            if [ ! -f /usr/bin/docker ]; then
+              curl -fsSL https://get.docker.com | sudo sh
+              sudo usermod -aG docker ubuntu
+            fi
+            DOCKER=/usr/bin/docker
 
             # Clona o repo se não existir, senão atualiza
             if [ ! -d "$APP_DIR/.git" ]; then
