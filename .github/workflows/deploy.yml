@@ -20,6 +20,21 @@ jobs:
     name: Test & Build Backend
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: clinikai
+          POSTGRES_USER: clinikai
+          POSTGRES_PASSWORD: clinikai
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,6 +48,12 @@ jobs:
 
       - name: Run tests
         working-directory: backend
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/clinikai
+          SPRING_DATASOURCE_USERNAME: clinikai
+          SPRING_DATASOURCE_PASSWORD: clinikai
+          JWT_SECRET: test-secret-for-ci-only
+          CRYPTO_MASTER_KEY_BASE64: dGVzdC1rZXktZm9yLWNpLW9ubHktMzI=
         run: ./gradlew test --no-daemon
 
       - name: Build JAR
