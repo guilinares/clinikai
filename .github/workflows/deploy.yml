@@ -131,10 +131,11 @@ jobs:
           script: |
             set -e
 
-            # Caminhos absolutos para evitar problemas de PATH em sessão não-interativa
-            DOCKER=/usr/bin/docker
+            # Caminhos para sessão SSH não-interativa
             GIT=/usr/bin/git
             APP_DIR=/home/ubuntu/clinikai
+            DOCKER=$(which docker || echo /usr/bin/docker)
+            export PATH=$PATH:/usr/local/bin:/snap/bin
 
             # Clona o repo se não existir, senão atualiza
             if [ ! -d "$APP_DIR/.git" ]; then
