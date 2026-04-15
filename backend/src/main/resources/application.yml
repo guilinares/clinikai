@@ -63,5 +63,4 @@ zapi:
 n8n:
   webhook-url: https://seu-n8n.com/webhook/flow-refine
   secret: seu-secret-aqui
-
   
