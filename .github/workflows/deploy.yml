@@ -201,8 +201,12 @@ jobs:
 
             # Pull e restart backend e nginx
             $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml pull backend
-            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d --no-deps backend nginx
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d --no-deps backend
 
+            test -f "$APP_DIR/clinikai-admin/dist/browser/index.html"
+
+            $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml up -d --no-deps --force-recreate nginx
+            
             # Logs em tempo real por 30s
             echo "=== Logs do backend ==="
             timeout 30 $DOCKER compose --env-file $APP_DIR/.env.prod -f $APP_DIR/docker-compose.prod.yml logs -f backend || true
