@@ -49,6 +49,11 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
 
+management:
+  health:
+    mail:
+      enabled: false
+
 logging:
   level:
     root: INFO

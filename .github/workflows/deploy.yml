@@ -153,10 +153,11 @@ jobs:
 
             # Clona o repo se não existir, senão atualiza
             if [ ! -d "$APP_DIR/.git" ]; then
-              $GIT clone https://github.com/${{ github.repository }}.git $APP_DIR
+              $GIT clone https://x-access-token:${{ secrets.GHCR_TOKEN }}@github.com/${{ github.repository }}.git $APP_DIR
             fi
 
             cd $APP_DIR
+            $GIT remote set-url origin https://x-access-token:${{ secrets.GHCR_TOKEN }}@github.com/${{ github.repository }}.git
             $GIT pull origin main
 
             # Garante Node.js 20+ instalado
