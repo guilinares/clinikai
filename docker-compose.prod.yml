@@ -64,7 +64,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /var/www/certbot:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./clinikai-admin/dist:/usr/share/nginx/html:ro
+      - ./clinikai-admin/dist/browser:/usr/share/nginx/html:ro
     depends_on:
       - backend
     networks:
