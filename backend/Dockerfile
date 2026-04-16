@@ -19,12 +19,12 @@ COPY src src
 RUN ./gradlew bootJar --no-daemon -x test
 
 # ─── Stage 2: Runtime ─────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
 # Create non-root user for security
-RUN addgroup -S clinikai && adduser -S clinikai -G clinikai
+RUN groupadd -r clinikai && useradd -r -g clinikai clinikai
 
 # Copy jar from builder
 COPY --from=builder /app/build/libs/*.jar app.jar
