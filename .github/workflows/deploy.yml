@@ -173,7 +173,7 @@ jobs:
             # Build do Angular
             cd $APP_DIR/clinikai-admin
             npm ci --silent
-            npm run build -- --configuration production
+            npx ng build --configuration production
 
             cd $APP_DIR
 
