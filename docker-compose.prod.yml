@@ -43,8 +43,8 @@ services:
       N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL}
       APP_FRONTEND_BASE_URL: https://${DOMAIN}
       SPRING_PROFILES_ACTIVE: prod
-    expose:
-      - "8080"
+    ports:
+      - "127.0.0.1:8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -63,8 +63,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /var/www/certbot:/var/www/certbot:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./clinikai-admin/dist:/usr/share/nginx/html:ro
+       - ./clinikai-admin/dist:/usr/share/nginx/html:ro
     depends_on:
       - backend
     networks:
