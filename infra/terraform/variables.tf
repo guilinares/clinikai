@@ -13,7 +13,7 @@ variable "environment" {
 variable "instance_type" {
   description = "Tipo da instância EC2 (ARM)"
   type        = string
-  default     = "t4g.small"
+  default     = "t4g.medium"
 }
 
 variable "ec2_public_key" {
