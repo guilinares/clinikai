@@ -166,6 +166,10 @@ jobs:
               sudo apt-get install -y nodejs
             fi
 
+            # Corrige permissões do projeto
+            sudo chown -R ubuntu:ubuntu $APP_DIR
+            rm -rf $APP_DIR/clinikai-admin/dist
+            
             # Build do Angular
             cd $APP_DIR/clinikai-admin
             npm ci --silent
