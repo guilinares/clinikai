@@ -5,17 +5,21 @@ import { Login } from './features/login/login/login';
 import { AuthGuard } from './core/auth/auth.guard';
 import { KbList } from './features/kb/kb-list/kb-list';
 import { KbForm } from './features/kb/kb-form/kb-form';
-import { FlowPoc } from './features/flow-poc/flow-poc';
+import { LandingPage } from './features/landing/landing-page/landing-page';
+import { RegisterSuccess } from './features/landing/register-success/register-success';
 
 export const routes: Routes = [
+  // Rotas públicas
+  { path: '', component: LandingPage },
+  { path: 'cadastro-sucesso', component: RegisterSuccess },
   { path: 'admin/login', component: Login },
 
+  // Rotas protegidas
   {
     path: 'admin',
     component: AdminLayout,
     canActivate: [AuthGuard],
     children: [
-      // por enquanto não temos KB ainda — vai cair em uma tela placeholder
       { path: '', pathMatch: 'full', redirectTo: 'kb' },
       { path: 'kb', component: KbList },
       { path: 'kb/new', component: KbForm },
@@ -39,6 +43,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '', pathMatch: 'full', redirectTo: 'admin' },
-  { path: '**', redirectTo: 'admin' },
+  { path: '**', redirectTo: '' },
 ];

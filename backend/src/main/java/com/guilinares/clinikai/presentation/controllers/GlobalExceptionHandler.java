@@ -69,11 +69,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(WhatsappSubscriptionRequiredException.class)
     public ResponseEntity<ApiErrorResponse> handleSubscriptionRequired(WhatsappSubscriptionRequiredException ex) {
-        return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED) // 428 é bem apropriado
+        return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED)
                 .body(ApiErrorResponse.of(
                         "WHATSAPP_SUBSCRIPTION_REQUIRED",
                         "Sua instância do WhatsApp precisa ser assinada para continuar enviando mensagens.",
                         "SUBSCRIBE_INSTANCE"
                 ));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> handleIllegalState(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(e.getMessage()));
     }
 }

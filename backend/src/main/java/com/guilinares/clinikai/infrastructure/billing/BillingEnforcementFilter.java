@@ -38,6 +38,8 @@ public class BillingEnforcementFilter extends OncePerRequestFilter {
         if (path.startsWith("/api/auth")) return true;
         if (path.startsWith("/api/billing/subscribe/basic")) return true;
         if (path.startsWith("/api/webhooks/asaas")) return true;
+        if (path.startsWith("/api/onboarding")) return true;
+        if (path.startsWith("/api/admin")) return true;
         // ✅ KB liberado
         if (path.contains("/kb")) return true;
         return WHITELIST.stream().anyMatch(path::startsWith);

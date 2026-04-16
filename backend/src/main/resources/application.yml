@@ -31,6 +31,19 @@ spring:
       hibernate:
         format_sql: true
 
+  mail:
+    host: ${MAIL_HOST:smtp.hostinger.com}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:suporte@clinikai.com.br}
+    password: ${MAIL_PASSWORD:}
+    protocol: smtps
+    properties:
+      mail:
+        smtps:
+          auth: true
+          ssl:
+            enable: true
+
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -45,6 +58,10 @@ logging:
 
 app:
   frontend-base-url: ${APP_FRONTEND_BASE_URL:http://localhost:4200}
+  backend-base-url: ${APP_BACKEND_BASE_URL:https://clinikai.com.br}
+  admin:
+    email: ${ADMIN_EMAIL:guimine.20@gmail.com}
+    action-secret: ${ADMIN_ACTION_SECRET:${JWT_SECRET:change-me}}
   webhooks:
     zapi:
       secret: "CHANGE_ME_DEV_SECRET"

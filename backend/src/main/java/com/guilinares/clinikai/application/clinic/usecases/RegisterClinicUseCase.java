@@ -9,6 +9,7 @@ import com.guilinares.clinikai.application.whatsapp.ports.ClinicWhatsappReposito
 import com.guilinares.clinikai.application.whatsapp.usecases.ClinicWhatsappProvisionUseCase;
 import com.guilinares.clinikai.domain.clinic.Clinic;
 import com.guilinares.clinikai.domain.clinic.ClinicRegisteredEvent;
+import com.guilinares.clinikai.domain.clinic.ClinicStatus;
 import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,8 @@ public class RegisterClinicUseCase {
                 clinicRequest.specialty().trim().toLowerCase(),
                 clinicRequest.whatsappNumber().trim(),
                 clinicRequest.email().trim(),
-                billingDoc
+                billingDoc,
+                ClinicStatus.ACTIVE
         );
         ClinicEntity saved = clinics.save(clinic);
         clinicBilling.createClinicBilling(saved);

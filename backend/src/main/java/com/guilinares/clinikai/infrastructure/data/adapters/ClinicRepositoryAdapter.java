@@ -2,6 +2,7 @@ package com.guilinares.clinikai.infrastructure.data.adapters;
 
 import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
 import com.guilinares.clinikai.domain.clinic.Clinic;
+import com.guilinares.clinikai.domain.clinic.ClinicStatus;
 import com.guilinares.clinikai.infrastructure.data.entities.ClinicEntity;
 import com.guilinares.clinikai.infrastructure.data.repositories.ClinicRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,17 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
 
     @Override
     public Optional<ClinicEntity> findById(UUID clinicId) {
-        Optional<ClinicEntity> clinic = repo.findById(clinicId);
-        return clinic;
+        return repo.findById(clinicId);
     }
 
     @Override
     public Optional<ClinicEntity> findByPhone(String phone) {
-        Optional<ClinicEntity> clinic = repo.findByWhatsappNumber(phone);
-        return clinic;
+        return repo.findByWhatsappNumber(phone);
+    }
+
+    @Override
+    public Optional<ClinicEntity> findByEmail(String email) {
+        return repo.findByEmail(email);
     }
 
     @Override
@@ -53,5 +57,11 @@ public class ClinicRepositoryAdapter implements ClinicRepositoryPort {
     @Transactional
     public void updateFlowPrompt(UUID clinicId, String flowPrompt) {
         repo.updateFlowPrompt(clinicId, flowPrompt);
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(UUID clinicId, ClinicStatus status) {
+        repo.updateStatus(clinicId, status);
     }
 }

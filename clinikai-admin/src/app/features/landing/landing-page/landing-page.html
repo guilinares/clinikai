@@ -1,0 +1,125 @@
+<div class="landing">
+
+  <!-- ─── HERO ────────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <nav class="nav">
+      <div class="nav-brand">ClinikAI</div>
+      <div class="nav-links">
+        <a href="#features">Funcionalidades</a>
+        <a href="#cadastro">Cadastre-se</a>
+        <a routerLink="/admin/login" class="btn btn-secondary nav-btn">Entrar</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Automatize o atendimento da sua clínica com
+        <span class="hero-highlight">Inteligência Artificial</span>
+      </h1>
+      <p class="hero-subtitle">
+        Gerencie agendamentos, atenda pacientes pelo WhatsApp e organize sua clínica
+        com a plataforma mais inteligente do mercado.
+      </p>
+      <button class="btn btn-primary hero-cta" (click)="scrollToRegister()">
+        Comece gratuitamente
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── FEATURES ────────────────────────────────────────────────────── -->
+  <section id="features" class="features-section">
+    <h2 class="section-title">Tudo que sua clínica precisa</h2>
+    <p class="section-subtitle">
+      Uma plataforma completa para modernizar o atendimento e a gestão da sua clínica.
+    </p>
+
+    <div class="features-grid">
+      @for (f of features; track f.title) {
+        <div class="feature-card card">
+          <div class="feature-icon">{{ f.icon }}</div>
+          <h3 class="feature-title">{{ f.title }}</h3>
+          <p class="feature-desc">{{ f.desc }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ─── CADASTRO ────────────────────────────────────────────────────── -->
+  <section id="cadastro" class="register-section">
+    <div class="register-container">
+      <div class="register-info">
+        <h2 class="section-title">Cadastre sua clínica</h2>
+        <p class="section-subtitle">
+          Preencha os dados abaixo para criar sua conta. Após o cadastro, nossa equipe
+          irá analisar e aprovar seu acesso em até 24 horas.
+        </p>
+        <ul class="register-steps">
+          <li>
+            <span class="step-number">1</span>
+            <span>Preencha o formulário com os dados da clínica e do responsável</span>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <span>Aguarde a aprovação (você receberá um email)</span>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <span>Acesse o painel e configure o atendimento da sua clínica</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="register-form-wrap card">
+        <form (ngSubmit)="submit()">
+          <h3 class="form-section-title">Dados da Clínica</h3>
+
+          <label class="label">Nome da Clínica</label>
+          <input class="input" [(ngModel)]="clinicName" name="clinicName" placeholder="Ex: Clínica Vida Nova" required />
+
+          <label class="label">Especialidade</label>
+          <input class="input" [(ngModel)]="specialty" name="specialty" placeholder="Ex: Odontologia, Dermatologia..." required />
+
+          <label class="label">WhatsApp da Clínica</label>
+          <input class="input" [(ngModel)]="whatsappNumber" name="whatsappNumber" placeholder="Ex: 5511999999999" required />
+
+          <label class="label">CPF ou CNPJ</label>
+          <input class="input" [(ngModel)]="documento" name="documento" placeholder="Apenas números" required />
+
+          <div class="form-divider"></div>
+          <h3 class="form-section-title">Dados do Responsável</h3>
+
+          <label class="label">Seu nome</label>
+          <input class="input" [(ngModel)]="userName" name="userName" placeholder="Nome completo" required />
+
+          <label class="label">Email</label>
+          <input class="input" [(ngModel)]="email" name="email" type="email" placeholder="seu@email.com" autocomplete="email" required />
+
+          <label class="label">Senha</label>
+          <input class="input" [(ngModel)]="password" name="password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required />
+
+          <label class="label">Confirmar Senha</label>
+          <input class="input" [(ngModel)]="confirmPassword" name="confirmPassword" type="password" placeholder="Repita a senha" autocomplete="new-password" required />
+
+          @if (error) {
+            <div class="error">{{ error }}</div>
+          }
+
+          <button class="btn btn-primary submit" [disabled]="loading" type="submit">
+            {{ loading ? 'Cadastrando...' : 'Criar minha conta' }}
+          </button>
+
+          <p class="form-footer">
+            Já tem conta? <a routerLink="/admin/login">Entrar</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ──────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-brand">ClinikAI</div>
+    <p class="footer-copy">&copy; 2025 ClinIKAI. Todos os direitos reservados.</p>
+  </footer>
+
+</div>

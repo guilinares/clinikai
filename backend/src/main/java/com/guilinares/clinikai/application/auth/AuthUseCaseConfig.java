@@ -2,6 +2,7 @@ package com.guilinares.clinikai.application.auth;
 
 import com.guilinares.clinikai.application.auth.ports.*;
 import com.guilinares.clinikai.application.auth.usecases.*;
+import com.guilinares.clinikai.application.clinic.ports.ClinicRepositoryPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,8 +15,8 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    public LoginUseCase loginUseCase(UserRepositoryPort users, PasswordHasherPort hasher, JwtTokenPort jwt) {
-        return new LoginUseCase(users, hasher, jwt);
+    public LoginUseCase loginUseCase(UserRepositoryPort users, PasswordHasherPort hasher, JwtTokenPort jwt, ClinicRepositoryPort clinics) {
+        return new LoginUseCase(users, hasher, jwt, clinics);
     }
 
     @Bean

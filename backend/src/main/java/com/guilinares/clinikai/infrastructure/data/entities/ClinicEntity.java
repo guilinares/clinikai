@@ -1,8 +1,8 @@
 package com.guilinares.clinikai.infrastructure.data.entities;
 
+import com.guilinares.clinikai.domain.clinic.ClinicStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -36,6 +36,10 @@ public class ClinicEntity {
     @Column(name = "billing_document", length = 14)
     private String billingDocument;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private ClinicStatus status;
+
     @Column(length = 50, nullable = false)
     private String timezone;
 
@@ -61,6 +65,7 @@ public class ClinicEntity {
         updatedAt = now;
         if (timezone == null) timezone = "America/Sao_Paulo";
         if (aiConfig == null) aiConfig = "";
+        if (status == null) status = ClinicStatus.ACTIVE;
     }
 
     @PreUpdate

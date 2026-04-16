@@ -1,0 +1,118 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(98,159,173,.30), transparent 60%),
+    radial-gradient(900px 600px at 80% 10%, rgba(41,99,116,.22), transparent 55%),
+    radial-gradient(900px 600px at 50% 90%, rgba(12,44,85,.16), transparent 55%);
+}
+
+.panel {
+  width: 520px;
+  max-width: 100%;
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.check-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(41,99,116,.12);
+  color: var(--c-teal);
+  font-size: 28px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--c-navy);
+  margin: 0;
+}
+
+.message {
+  margin-top: 12px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.details {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── STEPS ──────────────────────────────────────────────────────── */
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 28px 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 100px;
+}
+
+.step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.step-icon.done {
+  background: var(--c-teal);
+  color: white;
+}
+
+.step-icon.pending {
+  background: rgba(12,44,85,.08);
+  border: 2px solid rgba(12,44,85,.18);
+  color: var(--muted);
+}
+
+.step-line {
+  width: 40px;
+  height: 2px;
+  background: rgba(12,44,85,.12);
+  margin-bottom: 24px;
+}
+
+/* ─── ACTIONS ────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.actions .btn {
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+}

@@ -1,0 +1,41 @@
+<div class="wrap">
+  <div class="panel card">
+    <div class="icon-wrap">
+      <div class="check-icon">✓</div>
+    </div>
+
+    <h1 class="title">Cadastro realizado!</h1>
+
+    <p class="message">
+      <strong>{{ clinicName }}</strong> foi registrada com sucesso.
+    </p>
+
+    <p class="details">
+      Sua clínica está aguardando aprovação da nossa equipe.
+      Você receberá um email em <strong>até 24 horas</strong>
+      confirmando a ativação da sua conta.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon done">✓</div>
+        <span>Cadastro realizado</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-icon pending">2</div>
+        <span>Aguardando aprovação</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-icon pending">3</div>
+        <span>Acesso liberado</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a routerLink="/" class="btn btn-secondary">Voltar ao início</a>
+      <a routerLink="/admin/login" class="btn btn-primary">Ir para login</a>
+    </div>
+  </div>
+</div>
