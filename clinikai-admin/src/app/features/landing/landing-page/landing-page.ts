@@ -65,6 +65,44 @@ export class LandingPage {
     document.getElementById('cadastro')?.scrollIntoView({ behavior: 'smooth' });
   }
 
+  maskDocument(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let digits = input.value.replace(/\D/g, '').slice(0, 14);
+
+    let masked = '';
+    if (digits.length <= 11) {
+      // CPF: 000.000.000-00
+      if (digits.length > 0)  masked  = digits.slice(0, 3);
+      if (digits.length > 3)  masked += '.' + digits.slice(3, 6);
+      if (digits.length > 6)  masked += '.' + digits.slice(6, 9);
+      if (digits.length > 9)  masked += '-' + digits.slice(9, 11);
+    } else {
+      // CNPJ: 00.000.000/0001-00
+      masked  = digits.slice(0, 2);
+      if (digits.length > 2)  masked += '.' + digits.slice(2, 5);
+      if (digits.length > 5)  masked += '.' + digits.slice(5, 8);
+      if (digits.length > 8)  masked += '/' + digits.slice(8, 12);
+      if (digits.length > 12) masked += '-' + digits.slice(12, 14);
+    }
+
+    input.value = masked;
+    this.documento = masked;
+  }
+
+  maskPhone(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let digits = input.value.replace(/\D/g, '').slice(0, 13);
+
+    let masked = '';
+    if (digits.length > 0)  masked  = '+' + digits.slice(0, 2);
+    if (digits.length > 2)  masked += ' ' + digits.slice(2, 4);
+    if (digits.length > 4)  masked += ' ' + digits.slice(4, 9);
+    if (digits.length > 9)  masked += '-' + digits.slice(9, 13);
+
+    input.value = masked;
+    this.whatsappNumber = masked;
+  }
+
   submit() {
     this.error = null;
 
@@ -83,8 +121,8 @@ export class LandingPage {
     const req: OnboardingRequest = {
       clinicName: this.clinicName,
       specialty: this.specialty,
-      whatsappNumber: this.whatsappNumber,
-      documento: this.documento,
+      whatsappNumber: this.whatsappNumber.replace(/\D/g, ''),
+      documento: this.documento.replace(/\D/g, ''),
       userName: this.userName,
       email: this.email,
       password: this.password,
