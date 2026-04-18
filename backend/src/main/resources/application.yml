@@ -5,7 +5,7 @@ google:
   oauth:
     client-id: ${GOOGLE_CLIENT_ID:test-client-id}
     client-secret: ${GOOGLE_CLIENT_SECRET:test-client-secret}
-    redirect-uri: http://localhost:8080/api/integrations/google/callback
+    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/api/integrations/google/callback}
 
 asaas:
   base-url: https://api.asaas.com/v3
