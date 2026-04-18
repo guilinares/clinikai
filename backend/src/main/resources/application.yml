@@ -10,6 +10,7 @@ google:
 asaas:
   base-url: https://api.asaas.com/v3
   api-key: ${ASAAS_API_KEY:test-asaas-key}
+  webhook-token: ${ASAAS_WEBHOOK_TOKEN:}
 
 security:
   crypto:

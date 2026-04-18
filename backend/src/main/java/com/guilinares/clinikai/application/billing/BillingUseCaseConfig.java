@@ -1,5 +1,6 @@
 package com.guilinares.clinikai.application.billing;
 
+import com.guilinares.clinikai.application.billing.ports.BillingEventRepositoryPort;
 import com.guilinares.clinikai.application.billing.ports.BillingPort;
 import com.guilinares.clinikai.application.billing.usecases.HandleAsaasWebhookResponseUseCase;
 import com.guilinares.clinikai.application.billing.usecases.SubscribeBasicPixUseCase;
@@ -13,9 +14,10 @@ public class BillingUseCaseConfig {
 
     @Bean
     public HandleAsaasWebhookResponseUseCase handleAsaasWebhookResponseUseCase(
-            ClinicBillingRepositoryPort clinicBillingRepositoryPort
+            ClinicBillingRepositoryPort clinicBillingRepositoryPort,
+            BillingEventRepositoryPort billingEventRepositoryPort
     ) {
-        return new HandleAsaasWebhookResponseUseCase(clinicBillingRepositoryPort);
+        return new HandleAsaasWebhookResponseUseCase(clinicBillingRepositoryPort, billingEventRepositoryPort);
     }
 
     @Bean
