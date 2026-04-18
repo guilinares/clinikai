@@ -86,3 +86,4 @@ zapi:
 n8n:
   webhook-url: ${N8N_WEBHOOK_URL:https://test.example.com/webhook}
   secret: ${N8N_SECRET:test-secret}
+
